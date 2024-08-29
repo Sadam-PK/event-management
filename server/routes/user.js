@@ -179,4 +179,44 @@ router.post("/events/:eventId/attendees", async (req, res) => {
   }
 });
 
+// Search events
+router.get("/search_events", async (req, res) => {
+  try {
+    const { query } = req.query; // The search query parameter
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Perform a search based on the query
+    const events = await Event.find({
+      title: { $regex: query, $options: "i" }, // Case-insensitive search
+    }).populate("createdBy", "username");
+
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ error: "Error searching events" });
+  }
+});
+
+// Search users
+router.get("/search_users", async (req, res) => {
+  try {
+    const { query } = req.query; // The search query parameter
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Perform a search based on the query
+    const users = await User.find({
+      username: { $regex: query, $options: "i" }, // Case-insensitive search
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Error searching users" });
+  }
+});
+
 module.exports = router;
