@@ -1,24 +1,24 @@
-export default function CustomRadio() {
+export default function CustomRadio(props) {
   return (
     <div className="flex gap-5">
       <div className="flex gap-2 text-gray-500">
-        <label htmlFor="admin">organizer</label>
+        <label htmlFor="organizer">organizer</label>
         <input
           type="radio"
-          id="admin"
+          id="organizer"
           name="role"
           value="organizer"
-          //   onChange={onChange}
+          onChange={props.onChange}
         />
       </div>
       <div className="flex gap-2 text-gray-500">
-        <label htmlFor="user">Attendee</label>
+        <label htmlFor="attendee">Attendee</label>
         <input
           type="radio"
-          id="user"
+          id="attendee"
           name="role"
           value="attendee"
-          //   onChange={onChange}
+          onChange={props.onChange}
         />
       </div>
     </div>

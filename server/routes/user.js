@@ -85,7 +85,9 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
 // Find all created events
 router.get("/events", async (req, res) => {
   try {
-    const events = await Event.find({}).populate();
+    const events = await Event.find({})
+      .populate("createdBy", "username")
+      .populate("attendees", "username");
     console.log(events);
 
     res.status(200).json(events);
@@ -100,7 +102,9 @@ router.get("/events/:id", async (req, res) => {
 
   try {
     // Find the event by ID and populate if needed
-    const event = await Event.findById(id).populate();
+    const event = await Event.findById(id)
+      .populate("createdBy", "username")
+      .populate("attendees", "username");
 
     if (!event) {
       // If the event is not found, return a 404 status
