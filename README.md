@@ -7,3 +7,4 @@ react-router-dom axios react-redux redux-thunk @reduxjs/toolkit react-query
 dotenv
 zod
 async thunk redux
+npm install @heroicons/react

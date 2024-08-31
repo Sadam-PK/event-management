@@ -86,9 +86,30 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
 router.get("/events", async (req, res) => {
   try {
     const events = await Event.find({}).populate();
+    console.log(events);
+
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ error: "Error fetching events" });
+  }
+});
+
+// Find an events
+router.get("/events/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the event by ID and populate if needed
+    const event = await Event.findById(id).populate();
+
+    if (!event) {
+      // If the event is not found, return a 404 status
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching event" });
   }
 });
 
@@ -233,22 +254,21 @@ router.get("/users", async (req, res) => {
   }
 });
 
-
 // ---------- user profile related queries
 
 // Update User Profile
 router.put("/profile", authenticateJwt, async (req, res) => {
   const userId = req.user._id;
   const { username, password } = req.body;
-  
+
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-    
+
     user.username = username || user.username;
     user.password = password || user.password; // Make sure to hash the password before saving
     await user.save();
-    
+
     res.status(200).json({ message: "Profile updated successfully", user });
   } catch (error) {
     res.status(500).json({ error: "Error updating profile" });
@@ -258,11 +278,11 @@ router.put("/profile", authenticateJwt, async (req, res) => {
 // Get User Profile
 router.get("/profile", authenticateJwt, async (req, res) => {
   const userId = req.user._id;
-  
+
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-    
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Error fetching profile" });
@@ -272,7 +292,7 @@ router.get("/profile", authenticateJwt, async (req, res) => {
 // Delete User Account
 router.delete("/profile", authenticateJwt, async (req, res) => {
   const userId = req.user._id;
-  
+
   try {
     await User.findByIdAndDelete(userId);
     res.status(200).json({ message: "Account deleted successfully" });
@@ -280,6 +300,5 @@ router.delete("/profile", authenticateJwt, async (req, res) => {
     res.status(500).json({ error: "Error deleting account" });
   }
 });
-
 
 module.exports = router;

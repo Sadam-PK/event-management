@@ -18,14 +18,14 @@ function App() {
     <Router>
       <AppBar />
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path={"/signup"} element={<Signup />} />
         <Route path={"/login"} element={<Login />} />
-        <Route path="/" element={<LandingPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/updateprofile" element={<UpdateProfile />} />
         <Route path="/createevent" element={<CreateEvent />} />
         <Route path="/eventslist" element={<EventsList />} />
-        <Route path="/eventdetails" element={<EventDetails />} />
+        <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/userslist" element={<UsersList />} />
       </Routes>
     </Router>
