@@ -10,13 +10,12 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
-  const handleRadioChange = (event) => setRole(event.target.value);
-  
   const handleNameChange = (event) => setName(event.target.value);
   const handleUsernameChange = (event) => setUsername(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
+  const handleRadioChange = (event) => setRole(event.target.value);
 
   return (
     <div
