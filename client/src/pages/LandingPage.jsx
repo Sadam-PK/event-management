@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import OrganizerPanel from "../pages/OrganizerPanel";
 import AttendeePanel from "./AttendeePanel";
+import Login from "./Login";
 
 export default function LandingPage() {
   const [user, setUser] = useState();
@@ -25,10 +26,13 @@ export default function LandingPage() {
 
     fetchUser();
   }, []);
-
+  console.log(user?.role);
   if (user?.role == "organizer") {
     return <OrganizerPanel />;
   }
+  if (user?.role == "attendee") {
+    return <AttendeePanel />;
+  }
 
-  return <AttendeePanel />;
+  return <Login />;
 }

@@ -3,6 +3,8 @@ import CustomButton from "../components/customButton";
 import CustomRadio from "../components/customRadio";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -69,6 +71,7 @@ export default function Signup() {
       <div className="p-5">
         <p className="text-gray-500">
           Already have an account?{" "}
+          {/* <Link to="/login">Login</Link> */}
           <a href="/login" className="text-blue-700">
             Login here
           </a>

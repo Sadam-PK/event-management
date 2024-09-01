@@ -94,20 +94,23 @@ router.get("/users", async (req, res) => {
 
 
 // Create an event
-router.post("/create_event", async (req, res) => {
+router.post("/create_event", authenticateJwt, async (req, res) => {
   try {
-    const { title, createdBy } = req.body;
+    const { title } = req.body;
+    
+    // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
+    const userId = req.user._id;
 
     // Verify that the user is an organizer
-    const organizer = await User.findById(createdBy);
-    if (!organizer || organizer.role !== "organizer") {
+    const organizer = await User.findById(userId);
+    if (organizer.role !== "organizer") {
       return res
         .status(403)
         .json({ error: "Only organizers can create events" });
     }
 
     // Create the event
-    const event = new Event({ title, createdBy });
+    const event = new Event({ title, createdBy: userId });
     await event.save();
 
     // Add the event to the organizer's events array
@@ -119,6 +122,7 @@ router.post("/create_event", async (req, res) => {
     res.status(500).json({ error: "Error creating event" });
   }
 });
+
 
 // Find my events
 router.get("/my_events", authenticateJwt, async (req, res) => {

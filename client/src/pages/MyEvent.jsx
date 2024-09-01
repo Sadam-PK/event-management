@@ -26,17 +26,19 @@ export default function MyEvent() {
   }, []);
 
   return (
-    <div>
+    <div className="p-5">
       <h1>My Events</h1>
-      {events.length === 0 ? (
-        <p>No events found</p>
-      ) : (
-        events.map((event, i) => (
-          // <li key={event._id}>{event.title}</li>
-          <EventCard key={i} event={event} />
-        ))
-      )}
-      )
+
+      <div className="flex gap-5 pt-10">
+        {events.length === 0 ? (
+          <p>No events found</p>
+        ) : (
+          events.map((event, i) => (
+            // <li key={event._id}>{event.title}</li>
+            <EventCard key={i} event={event} />
+          ))
+        )}
+      </div>
     </div>
   );
 }

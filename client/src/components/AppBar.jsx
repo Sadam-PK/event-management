@@ -28,10 +28,22 @@ export default function AppBar() {
     fetchEvents();
   }, []);
 
-  // console.log("username = "+ user);
-
   if (!user) {
-    return <Login />;
+    return (
+      <div className="bg-emerald-300 p-3 flex justify-between">
+        <h2 className="font-bold">
+          <a href="/">Event Management</a>
+        </h2>
+        <ul className="flex flex-row gap-5">
+          <li>
+            <a href="/login">login</a>
+          </li>
+          <li>
+            <a href="/signup">signup</a>
+          </li>
+        </ul>
+      </div>
+    );
   }
 
   return (
@@ -42,7 +54,7 @@ export default function AppBar() {
       <ul className="flex flex-row gap-5">
         <li>{user}</li>
         <li
-        className="cursor-pointer"
+          className="cursor-pointer"
           onClick={() => {
             localStorage.setItem("token", null);
             setUser({ user: null });

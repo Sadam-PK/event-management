@@ -1,6 +1,7 @@
 import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -56,6 +57,7 @@ export default function Login() {
       <div className="p-5">
         <p className="text-gray-500">
           Don't have an account?{" "}
+          {/* <Link to="/signup">Signup</Link> */}
           <a href="/signup" className="text-blue-700">
             Register here
           </a>
