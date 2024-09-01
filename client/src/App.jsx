@@ -10,6 +10,9 @@ import EventDetails from "./pages/EventDetails";
 import UsersList from "./pages/UsersList";
 import AppBar from "./components/AppBar";
 import Header from "./components/Header";
+import AttendeePanel from "./pages/AttendeePanel";
+import OrganizerPanel from "./pages/OrganizerPanel";
+import MyEvent from "./pages/MyEvent";
 import Footer from "./components/Footer";
 import "./App.css";
 
@@ -27,6 +30,9 @@ function App() {
         <Route path="/events" element={<EventsList />} />
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/users" element={<UsersList />} />
+        <Route path="/attendee-panel" element={<AttendeePanel/>}/>
+        <Route path="/organizer-panel" element={<OrganizerPanel/>}/>
+        <Route path="/my-event" element={<MyEvent/>}/>
       </Routes>
     </Router>
   );

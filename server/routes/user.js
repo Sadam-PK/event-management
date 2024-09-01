@@ -38,6 +38,61 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/me", authenticateJwt, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    console.log(userId);
+
+    // Find the logged-in user by their ID
+    const user = await User.findOne({ _id: userId }).populate("username","role");
+
+    // If no user is found, return a 404 response
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return the found user
+    res.status(200).json(user);
+  } catch (error) {
+    // Log the error to get more details
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Error fetching user" });
+  }
+});
+
+
+
+// Search users
+router.get("/search_users", async (req, res) => {
+  try {
+    const { query } = req.query; // The search query parameter
+
+    if (!query) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Perform a search based on the query
+    const users = await User.find({
+      username: { $regex: query, $options: "i" }, // Case-insensitive search
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Error searching users" });
+  }
+});
+
+// get all users
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find({}).populate();
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching users" });
+  }
+});
+
+
 // Create an event
 router.post("/create_event", async (req, res) => {
   try {
@@ -73,7 +128,7 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
     // Find events created by the logged-in user
     const events = await Event.find({ createdBy: userId }).populate(
       "createdBy",
-      "username"
+      "username",
     );
 
     res.status(200).json(events);
@@ -226,35 +281,6 @@ router.get("/search_events", async (req, res) => {
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ error: "Error searching events" });
-  }
-});
-
-// Search users
-router.get("/search_users", async (req, res) => {
-  try {
-    const { query } = req.query; // The search query parameter
-
-    if (!query) {
-      return res.status(400).json({ message: "Search query is required" });
-    }
-
-    // Perform a search based on the query
-    const users = await User.find({
-      username: { $regex: query, $options: "i" }, // Case-insensitive search
-    });
-
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ error: "Error searching users" });
-  }
-});
-
-router.get("/users", async (req, res) => {
-  try {
-    const users = await User.find({}).populate();
-    res.status(200).json({ users });
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching users" });
   }
 });
 

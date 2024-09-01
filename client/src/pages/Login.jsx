@@ -46,6 +46,7 @@ export default function Login() {
             })
             .then((data) => {
               localStorage.setItem("token", data.token);
+              window.location.reload();
               navigate("/");
             });
         }}
