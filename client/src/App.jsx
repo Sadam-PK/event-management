@@ -15,6 +15,7 @@ import OrganizerPanel from "./pages/OrganizerPanel";
 import MyEvent from "./pages/MyEvent";
 import Footer from "./components/Footer";
 import "./App.css";
+import UpdateEvent from "./pages/UpdatedEvent";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/attendee-panel" element={<AttendeePanel/>}/>
         <Route path="/organizer-panel" element={<OrganizerPanel/>}/>
         <Route path="/my-event" element={<MyEvent/>}/>
+        <Route path="/update-event" element={<UpdateEvent/>}/>
       </Routes>
     </Router>
   );
