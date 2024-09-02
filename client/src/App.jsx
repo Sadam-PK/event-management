@@ -34,7 +34,7 @@ function App() {
         <Route path="/attendee-panel" element={<AttendeePanel/>}/>
         <Route path="/organizer-panel" element={<OrganizerPanel/>}/>
         <Route path="/my-event" element={<MyEvent/>}/>
-        <Route path="/update-event" element={<UpdateEvent/>}/>
+        <Route path="/update-event/:id" element={<UpdateEvent/>}/>
       </Routes>
     </Router>
   );

@@ -76,11 +76,37 @@ export default function EventDetails() {
   };
 
   const handleEditClick = () => {
-    navigate("/update-event")
+    navigate(`/update-event/${event._id}`);
   };
 
-  const handleDeleteClick = () => {
-    alert("Delete");
+  const handleDeleteClick = async () => {
+    // alert("Delete");
+    try {
+      const response = await fetch(
+        `http://localhost:3000/user/delete_event/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Successfully deleted the event:", data);
+        toast.info("Event Deleted");
+        navigate('/my-event')
+      } else {
+        console.error("Error deleting the event:", data.message);
+        toast.warning("Error deleting.");
+      }
+    } catch (error) {
+      console.error("Error occoured:", error);
+      toast.error("An error occurred.");
+    }
   };
 
   // Check if the user is the organizer of the event
