@@ -6,7 +6,6 @@ export default function EventCard(props) {
       onClick={props.onClick}
     >
       {props.event.title}
-      {/* <button>Join</button> */}
     </div>
   );
 }

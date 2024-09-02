@@ -38,7 +38,7 @@ export default function EventsList() {
         <SearchInput placeholder="Search Event..." />
       </div>    
       <h2>Events List</h2>
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         {events.map((e, i) => (
           <EventCard key={i} event={e} onClick={() => handleClick(e._id)} />
         ))}

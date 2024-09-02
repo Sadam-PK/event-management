@@ -231,11 +231,11 @@ router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {
   }
 });
 
-// Add attendees to event
-router.post("/events/:eventId/attendees", async (req, res) => {
+// Join ---- Add attendees to event
+router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
   try {
     const { eventId } = req.params;
-    const { userId } = req.body; // Assuming you pass the user's ID in the request body
+    const userId  = req.user._id; // Assuming you pass the user's ID in the request body
 
     // Find the event by ID
     const event = await Event.findById(eventId);
