@@ -4,6 +4,7 @@ import CustomRadio from "../components/customRadio";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 export default function Signup() {
@@ -62,6 +63,7 @@ export default function Signup() {
             })
             .then((data) => {
               localStorage.setItem("token", data.token);
+              toast("Signed Up Successfully..")
               navigate("/");
             });
         }}

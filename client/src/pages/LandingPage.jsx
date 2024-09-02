@@ -4,6 +4,7 @@ import OrganizerPanel from "../pages/OrganizerPanel";
 import AttendeePanel from "./AttendeePanel";
 import Login from "./Login";
 
+
 export default function LandingPage() {
   const [user, setUser] = useState();
 
