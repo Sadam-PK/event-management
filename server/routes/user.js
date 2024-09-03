@@ -220,32 +220,53 @@ router.get("/events/:id", async (req, res) => {
 });
 
 // Update an event
-router.put("/update_event/:eventId", authenticateJwt, async (req, res) => {
-  try {
-    const { eventId } = req.params;
-    const { title } = req.body;
-    const userId = req.user._id;
+router.put(
+  "/update_event/:eventId",
+  authenticateJwt,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const { title } = req.body;
+      const userId = req.user._id;
 
-    // Find the event and ensure the user is the organizer
-    const event = await Event.findById(eventId);
-    if (!event) {
-      return res.status(404).json({ error: "Event not found" });
+      // Find the event and ensure the user is the organizer
+      const event = await Event.findById(eventId);
+      if (!event) {
+        return res.status(404).json({ error: "Event not found" });
+      }
+      if (event.createdBy.toString() !== userId.toString()) {
+        return res
+          .status(403)
+          .json({ error: "Only the organizer can update this event" });
+      }
+
+      // Update the event title if provided
+      event.title = title || event.title;
+
+      // Check if a new photo is uploaded
+      if (req.file) {
+        // Upload the new photo to Cloudinary
+        const upload = await cloudinary.uploader.upload(req.file.path);
+
+        // Optionally, you could delete the old image from Cloudinary
+        // if you store the public_id and want to manage storage properly
+
+        // Update the imgPath with the new Cloudinary URL
+        event.imgPath = upload.secure_url;
+      }
+
+      // Save the updated event
+      await event.save();
+
+      res.status(200).json({ message: "Event updated successfully", event });
+    } catch (error) {
+      console.error("Error updating event:", error);
+      res.status(500).json({ error: "Error updating event" });
     }
-    if (event.createdBy.toString() !== userId.toString()) {
-      return res
-        .status(403)
-        .json({ error: "Only the organizer can update this event" });
-    }
-
-    // Update the event details
-    event.title = title || event.title;
-    await event.save();
-
-    res.status(200).json({ message: "Event updated successfully", event });
-  } catch (error) {
-    res.status(500).json({ error: "Error updating event" });
   }
-});
+);
+
 
 // Delete an event
 router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {

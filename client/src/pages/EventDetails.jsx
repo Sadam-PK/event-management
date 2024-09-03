@@ -67,6 +67,7 @@ export default function EventDetails() {
       if (response.ok) {
         console.log("Successfully joined the event:", data);
         toast("Event Joined");
+        
       } else {
         console.error("Error joining event:", data.message);
         toast.warning("User has already joined.");

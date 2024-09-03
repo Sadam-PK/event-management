@@ -2,11 +2,13 @@ import { useState } from "react";
 import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
   // const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -38,6 +40,7 @@ export default function CreateEvent() {
 
       if (response.status === 201) {
         // console.log("Event created successfully:", response.data);
+        toast("Event Created...");
         navigate("/");
       } else {
         console.error("Error creating event:", response.data.error);

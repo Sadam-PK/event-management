@@ -1,42 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomInput from "../components/customInput";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 
 export default function UpdateEvent() {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const {id} = useParams();
-
+  const [file, setFile] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
 
+  // Fetch the existing event details (optional, if you want to pre-fill the form)
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/user/events/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        if (response.status === 200) {
+          const event = response.data;
+          setTitle(event.title);
+          // Optionally, set the file if you want to show the existing image
+        }
+      } catch (error) {
+        console.error("Error fetching event details:", error);
+      }
+    };
+
+    fetchEventDetails();
+  }, [id]);
+
   const handleTitleChange = (event) => setTitle(event.target.value);
-  const handleDescriptionChange = (event) => setDescription(event.target.value);
+  const handleFileChange = (event) => setFile(event.target.files[0]);
 
-  const handleCreateEvent = async () => {
+  const handleUpdateEvent = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    if (file) {
+      formData.append("photo", file); // Only append photo if a new file is selected
+    }
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
     try {
-      const response = await fetch(`http://localhost:3000/user/update_event/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          title,
-          // description,
-        }),
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.put(
+        `http://localhost:3000/user/update_event/${id}`,
+        formData,
+        config
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Event updated successfully:", data);
+      if (response.status === 200) {
+        // console.log("Event updated successfully:", response.data);
+        toast("Event Updated");
         navigate("/");
       } else {
-        console.error("Error updating event:", data.error);
+        console.error("Error updating event:", response.data.error);
       }
     } catch (error) {
-      console.error("Error updating event:", error);
+      console.error(
+        "Error updating event:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -49,14 +84,10 @@ export default function UpdateEvent() {
           value={title}
           onChange={handleTitleChange}
         />
-        <CustomInput
-          placeholder="Description"
-          value={description}
-          onChange={handleDescriptionChange}
-        />
+        <input type="file" onChange={handleFileChange} />
         <button
           className="bg-emerald-400 p-2 border rounded-md w-32"
-          onClick={handleCreateEvent}
+          onClick={handleUpdateEvent}
         >
           Update Event
         </button>
