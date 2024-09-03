@@ -1,10 +1,87 @@
 const express = require("express");
 const { authenticateJwt } = require("../middleware/auth");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRET = process.env.SECRET;
 const { User, Event } = require("../db/index");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
+const cloudinary = require("../helper/cloudinaryConfig");
+const moment = require("moment");
+
+const imgConfig = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "./uploads");
+  },
+  filename: (req, file, callback) => {
+    callback(null, `image-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+// image filter
+const isImage = (req, file, callback) => {
+  if (file.mimetype.startsWith("image")) {
+    callback(null, true);
+  } else {
+    callback(new Error("Only images are allowed"));
+  }
+};
+
+const upload = multer({
+  storage: imgConfig,
+  fileFilter: isImage,
+});
+
+// ###################### Create an event ###################################
+router.post(
+  "/create_event",
+  authenticateJwt,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      // cloudinary ----
+
+      const upload = await cloudinary.uploader.upload(req.file.path);
+      console.log(upload);
+      const date = moment(new Date()).format("YYYY-MM-DD");
+      const { title } = req.body;
+
+      // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
+      const userId = req.user._id;
+
+      // Verify that the user is an organizer
+      const organizer = await User.findById(userId);
+      if (organizer.role !== "organizer") {
+        return res
+          .status(403)
+          .json({ error: "Only organizers can create events" });
+      }
+
+      // Create the event
+      const event = new Event({
+        title,
+        imgPath: upload.secure_url, // Set the imgPath field
+        createdBy: userId,
+        date: date,
+      });
+
+      console.log('dsadasd' + event);
+      
+      await event.save();
+
+      // Add the event to the organizer's events array
+      organizer.events.push(event._id);
+      await organizer.save();
+
+      res.status(201).json(event);
+      console.log("File uploaded:", req.file);
+    } catch (error) {
+      console.error("Error creating event:", error);
+      res.status(500).json({ error: "Error creating event" });
+    }
+  }
+);
 
 router.get("/", (req, res) => {
   res.json();
@@ -44,7 +121,10 @@ router.get("/me", authenticateJwt, async (req, res) => {
     console.log(userId);
 
     // Find the logged-in user by their ID
-    const user = await User.findOne({ _id: userId }).populate("username","role");
+    const user = await User.findOne({ _id: userId }).populate(
+      "username",
+      "role"
+    );
 
     // If no user is found, return a 404 response
     if (!user) {
@@ -59,8 +139,6 @@ router.get("/me", authenticateJwt, async (req, res) => {
     res.status(500).json({ error: "Error fetching user" });
   }
 });
-
-
 
 // Search users
 router.get("/search_users", async (req, res) => {
@@ -92,38 +170,6 @@ router.get("/users", async (req, res) => {
   }
 });
 
-
-// Create an event
-router.post("/create_event", authenticateJwt, async (req, res) => {
-  try {
-    const { title } = req.body;
-    
-    // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
-    const userId = req.user._id;
-
-    // Verify that the user is an organizer
-    const organizer = await User.findById(userId);
-    if (organizer.role !== "organizer") {
-      return res
-        .status(403)
-        .json({ error: "Only organizers can create events" });
-    }
-
-    // Create the event
-    const event = new Event({ title, createdBy: userId });
-    await event.save();
-
-    // Add the event to the organizer's events array
-    organizer.events.push(event._id);
-    await organizer.save();
-
-    res.status(201).json(event);
-  } catch (error) {
-    res.status(500).json({ error: "Error creating event" });
-  }
-});
-
-
 // Find my events
 router.get("/my_events", authenticateJwt, async (req, res) => {
   try {
@@ -132,7 +178,7 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
     // Find events created by the logged-in user
     const events = await Event.find({ createdBy: userId }).populate(
       "createdBy",
-      "username",
+      "username"
     );
 
     res.status(200).json(events);
@@ -235,7 +281,7 @@ router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {
 router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
   try {
     const { eventId } = req.params;
-    const userId  = req.user._id; // Assuming you pass the user's ID in the request body
+    const userId = req.user._id; // Assuming you pass the user's ID in the request body
 
     // Find the event by ID
     const event = await Event.findById(eventId);

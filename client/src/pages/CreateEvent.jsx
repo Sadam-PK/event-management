@@ -1,40 +1,49 @@
 import { useState } from "react";
 import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  // const [description, setDescription] = useState("");
+  const [file, setFile] = useState(null);
 
   const navigate = useNavigate();
 
   const handleTitleChange = (event) => setTitle(event.target.value);
-  const handleDescriptionChange = (event) => setDescription(event.target.value);
+  // const handleDescriptionChange = (event) => setDescription(event.target.value);
+  const handleFileChange = (event) => setFile(event.target.files[0]);
 
-  const handleCreateEvent = async () => {
+  const handleCreateEvent = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("photo", file);
+    // formData.append("description", description); // if needed
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
     try {
-      const response = await fetch("http://localhost:3000/user/create_event", {
-        method: "POST",
-        body: JSON.stringify({
-          title,
-          // description,
-        }),
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:3000/user/create_event",
+        formData,
+        config
+      );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Event created successfully:", data);
+      if (response.status === 201) {
+        console.log("Event created successfully:", response.data);
         navigate("/");
       } else {
-        console.error("Error creating event:", data.error);
+        console.error("Error creating event:", response.data.error);
       }
     } catch (error) {
-      console.error("Error creating event:", error);
+      console.error("Error creating event:", error.response ? error.response.data : error.message);
     }
   };
 
@@ -47,11 +56,12 @@ export default function CreateEvent() {
           value={title}
           onChange={handleTitleChange}
         />
-        <CustomInput
+        {/* <CustomInput
           placeholder="Description"
           value={description}
           onChange={handleDescriptionChange}
-        />
+        /> */}
+        <input type="file" onChange={handleFileChange} />
         <button
           className="bg-emerald-400 p-2 border rounded-md w-32"
           onClick={handleCreateEvent}

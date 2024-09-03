@@ -9,3 +9,6 @@ zod
 async thunk redux
 npm install @heroicons/react
 react toastify
+multer 
+couldinary
+moment

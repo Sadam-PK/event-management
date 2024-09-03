@@ -23,7 +23,15 @@ const eventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-  }, // Reference to the Organizer
+  },
+  imgPath: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+  },
+  // Reference to the Organizer
   attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // References to Attendees
 });
 
