@@ -37,13 +37,16 @@ export default function CreateEvent() {
       );
 
       if (response.status === 201) {
-        console.log("Event created successfully:", response.data);
+        // console.log("Event created successfully:", response.data);
         navigate("/");
       } else {
         console.error("Error creating event:", response.data.error);
       }
     } catch (error) {
-      console.error("Error creating event:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error creating event:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 

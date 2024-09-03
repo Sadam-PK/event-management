@@ -1,3 +1,5 @@
+
+// ---- card mapping through list of event
 export default function EventCard(props) {
   return (
     <div

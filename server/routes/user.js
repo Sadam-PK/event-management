@@ -43,7 +43,7 @@ router.post(
       // cloudinary ----
 
       const upload = await cloudinary.uploader.upload(req.file.path);
-      console.log(upload);
+      // console.log(upload);
       const date = moment(new Date()).format("YYYY-MM-DD");
       const { title } = req.body;
 
@@ -66,8 +66,6 @@ router.post(
         date: date,
       });
 
-      console.log('dsadasd' + event);
-      
       await event.save();
 
       // Add the event to the organizer's events array
@@ -75,7 +73,7 @@ router.post(
       await organizer.save();
 
       res.status(201).json(event);
-      console.log("File uploaded:", req.file);
+      // console.log("File uploaded:", req.file);
     } catch (error) {
       console.error("Error creating event:", error);
       res.status(500).json({ error: "Error creating event" });
@@ -118,7 +116,7 @@ router.post("/login", async (req, res) => {
 router.get("/me", authenticateJwt, async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log(userId);
+    // console.log(userId);
 
     // Find the logged-in user by their ID
     const user = await User.findOne({ _id: userId }).populate(
@@ -193,7 +191,6 @@ router.get("/events", async (req, res) => {
     const events = await Event.find({})
       .populate("createdBy", "username")
       .populate("attendees", "username");
-    console.log(events);
 
     res.status(200).json(events);
   } catch (error) {

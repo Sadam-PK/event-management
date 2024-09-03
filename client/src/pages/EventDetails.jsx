@@ -12,7 +12,7 @@ export default function EventDetails() {
 
   const navigate = useNavigate();
 
-  // Fetch event and user details
+  // ----- Fetch event and user details -----
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -47,6 +47,7 @@ export default function EventDetails() {
     fetchUser();
   }, [id]);
 
+  // ------ join event as attendee --------
   const handleJoinClick = async () => {
     try {
       const response = await fetch(
@@ -75,10 +76,12 @@ export default function EventDetails() {
     }
   };
 
+  // ----- edit event as organzier ------
   const handleEditClick = () => {
     navigate(`/update-event/${event._id}`);
   };
 
+  // ------ delete event -------
   const handleDeleteClick = async () => {
     // alert("Delete");
     try {
@@ -109,7 +112,7 @@ export default function EventDetails() {
     }
   };
 
-  // Check if the user is the organizer of the event
+  // ---- Check if the user is the organizer of the event ----
   const isOrganizer = user && event?.createdBy?.username === user.username;
 
   return (
@@ -120,6 +123,8 @@ export default function EventDetails() {
           <h2>Event Title: {event?.title}</h2>
         </div>
         <div>Organizer: {event?.createdBy?.username}</div>
+        <div>Date:{event?.date}</div>
+        <div><img src={event?.imgPath} alt="" /></div>
       </div>
 
       {!isOrganizer && (

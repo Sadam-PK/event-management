@@ -22,7 +22,7 @@ export default function EventsList() {
           },
         });
         setEvents(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         // Accessing the correct data field
       } catch (error) {
         console.error("Error fetching events:", error);
