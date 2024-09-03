@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import CustomButton from "../components/customButton";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -101,7 +102,7 @@ export default function EventDetails() {
       if (response.ok) {
         console.log("Successfully deleted the event:", data);
         toast.info("Event Deleted");
-        navigate('/my-event')
+        navigate("/my-event");
       } else {
         console.error("Error deleting the event:", data.message);
         toast.warning("Error deleting.");
@@ -123,8 +124,10 @@ export default function EventDetails() {
           <h2>Event Title: {event?.title}</h2>
         </div>
         <div>Organizer: {event?.createdBy?.username}</div>
-        <div>Date:{event?.date}</div>
-        <div><img src={event?.imgPath} alt="" /></div>
+        <div>Date: {moment(event?.date).format("L")}</div>
+        <div>
+          <img src={event?.imgPath} alt="" />
+        </div>
       </div>
 
       {!isOrganizer && (
