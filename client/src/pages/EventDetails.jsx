@@ -67,7 +67,6 @@ export default function EventDetails() {
       if (response.ok) {
         console.log("Successfully joined the event:", data);
         toast("Event Joined");
-        
       } else {
         console.error("Error joining event:", data.message);
         toast.warning("User has already joined.");
@@ -118,32 +117,32 @@ export default function EventDetails() {
   const isOrganizer = user && event?.createdBy?.username === user.username;
 
   return (
-    <div className="p-5">
-      <h2 className="text-xl font-bold">Event details</h2>
-      <div className="flex flex-col">
-        <div>
-          <h2>Event Title: {event?.title}</h2>
-        </div>
+    <div className=" flex flex-row mx-auto h-auto p-10 gap-2">
+      <div className="flex flex-col space-y-5 w-[60vw] p-5 border">
+        <div className="">Event Title: {event?.title}</div>
+        <div className="">Details: {event?.description}</div>
         <div>Organizer: {event?.createdBy?.username}</div>
+        <div>Time: {event?.time}</div>
         <div>Date: {moment(event?.date).format("L")}</div>
-        <div>
-          <img src={event?.imgPath} alt="" />
-        </div>
-      </div>
-
-      {!isOrganizer && (
-        <div>
-          <div className="flex gap-2">
-            <CustomButton name="Join" onClick={handleJoinClick} />
+        <div>Location: {event?.location}</div>
+        <div>Capacity: {event?.maxAttendees}</div>
+        {!isOrganizer && (
+          <div>
+            <div className="flex gap-2">
+              <CustomButton name="Join" onClick={handleJoinClick} />
+            </div>
           </div>
-        </div>
-      )}
-      {isOrganizer && (
-        <div className="space-x-2">
-          <CustomButton name="Edit" onClick={handleEditClick} />
-          <CustomButton name="Delete" onClick={handleDeleteClick} />
-        </div>
-      )}
+        )}
+        {isOrganizer && (
+          <div className="space-x-2">
+            <CustomButton name="Edit" onClick={handleEditClick} />
+            <CustomButton name="Delete" onClick={handleDeleteClick} />
+          </div>
+        )}
+      </div>
+      <div className="flex w-[40vw] border">
+        <img src={event?.imgPath} alt="" className="h-20" />
+      </div>
     </div>
   );
 }

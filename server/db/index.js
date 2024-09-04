@@ -30,7 +30,20 @@ const eventSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
+    required: true
   },
+  time:{
+    type: String, required: true
+  },
+  location: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  maxAttendees: { type: Number, required: true },
   // Reference to the Organizer
   attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // References to Attendees
 });

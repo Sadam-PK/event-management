@@ -8,7 +8,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const cloudinary = require("../helper/cloudinaryConfig");
-const moment = require("moment");
+// const moment = require("moment");
 
 const imgConfig = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -32,54 +32,6 @@ const upload = multer({
   storage: imgConfig,
   fileFilter: isImage,
 });
-
-// ###################### Create an event ###################################
-router.post(
-  "/create_event",
-  authenticateJwt,
-  upload.single("photo"),
-  async (req, res) => {
-    try {
-      // cloudinary ----
-
-      const upload = await cloudinary.uploader.upload(req.file.path);
-      // console.log(upload);
-      const date = moment(new Date()).format("YYYY-MM-DD");
-      const { title } = req.body;
-
-      // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
-      const userId = req.user._id;
-
-      // Verify that the user is an organizer
-      const organizer = await User.findById(userId);
-      if (organizer.role !== "organizer") {
-        return res
-          .status(403)
-          .json({ error: "Only organizers can create events" });
-      }
-
-      // Create the event
-      const event = new Event({
-        title,
-        imgPath: upload.secure_url, // Set the imgPath field
-        createdBy: userId,
-        date: date,
-      });
-
-      await event.save();
-
-      // Add the event to the organizer's events array
-      organizer.events.push(event._id);
-      await organizer.save();
-
-      res.status(201).json(event);
-      // console.log("File uploaded:", req.file);
-    } catch (error) {
-      console.error("Error creating event:", error);
-      res.status(500).json({ error: "Error creating event" });
-    }
-  }
-);
 
 router.get("/", (req, res) => {
   res.json();
@@ -168,6 +120,63 @@ router.get("/users", async (req, res) => {
   }
 });
 
+// ###################### Create an event ###################################
+router.post(
+  "/create_event",
+  authenticateJwt,
+  upload.single("photo"),
+  async (req, res) => {
+    try {
+      // cloudinary ----
+
+      // console.log(upload);
+      const { title } = req.body;
+      const { description } = req.body;
+      const { location } = req.body;
+      const { date } = req.body;
+      // const time = moment().format("HH:mm:ss");
+      const { time } = req.body;
+      const { maxAttendees } = req.body;
+      const upload = await cloudinary.uploader.upload(req.file.path);
+
+      // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
+      const userId = req.user._id;
+
+      // Verify that the user is an organizer
+      const organizer = await User.findById(userId);
+      if (organizer.role !== "organizer") {
+        return res
+          .status(403)
+          .json({ error: "Only organizers can create events" });
+      }
+
+      // Create the event
+      const event = new Event({
+        title,
+        description,
+        imgPath: upload.secure_url, // Set the imgPath field
+        createdBy: userId,
+        date,
+        time,
+        location,
+        maxAttendees,
+      });
+
+      await event.save();
+
+      // Add the event to the organizer's events array
+      organizer.events.push(event._id);
+      await organizer.save();
+
+      res.status(201).json(event);
+      // console.log("File uploaded:", req.file);
+    } catch (error) {
+      console.error("Error creating event:", error);
+      res.status(500).json({ error: "Error creating event" });
+    }
+  }
+);
+
 // Find my events
 router.get("/my_events", authenticateJwt, async (req, res) => {
   try {
@@ -227,7 +236,9 @@ router.put(
   async (req, res) => {
     try {
       const { eventId } = req.params;
-      const { title } = req.body;
+      const { title, date, time, location, description, maxAttendees } =
+        req.body;
+
       const userId = req.user._id;
 
       // Find the event and ensure the user is the organizer
@@ -243,6 +254,11 @@ router.put(
 
       // Update the event title if provided
       event.title = title || event.title;
+      event.time = time;
+      event.date = date;
+      event.location = location;
+      event.description = description;
+      event.maxAttendees = maxAttendees;
 
       // Check if a new photo is uploaded
       if (req.file) {
@@ -266,7 +282,6 @@ router.put(
     }
   }
 );
-
 
 // Delete an event
 router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {
