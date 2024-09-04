@@ -12,3 +12,4 @@ react toastify
 multer 
 couldinary
 moment (front-back both)
+react-paginate

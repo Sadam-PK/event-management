@@ -22,8 +22,6 @@ export default function EventsList() {
           },
         });
         setEvents(response.data);
-        // console.log(response.data);
-        // Accessing the correct data field
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -36,8 +34,8 @@ export default function EventsList() {
     <div className="p-10 space-y-5">
       <div className="justify-center flex">
         <SearchInput placeholder="Search Event..." />
-      </div>    
-      <h2>Events List</h2>
+      </div>
+      <h2 className="font-bold text-xl">Events List</h2>
       <div className="flex flex-wrap gap-3">
         {events.map((e, i) => (
           <EventCard key={i} event={e} onClick={() => handleClick(e._id)} />

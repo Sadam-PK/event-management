@@ -94,15 +94,15 @@ export default function CreateEvent() {
           id="time"
           value={time}
           onChange={handleTimeChange}
-          className="border p-3"
+          className="border p-3 w-[20vw]"
         />
         <input
           type="text"
           id="location"
           value={location}
           onChange={handleLocationChange}
-          placeholder="Enter location"
-          className="border p-3"
+          placeholder="Location"
+          className="border p-3 w-[20vw]"
         />
         <input
           type="date"
@@ -110,7 +110,7 @@ export default function CreateEvent() {
           value={date}
           onChange={handleDateChange}
           min={today()}
-          className="border p-3"
+          className="border p-3 w-[20vw]"
         />
         <input
           type="number"
@@ -120,9 +120,10 @@ export default function CreateEvent() {
           className="border p-3"
           placeholder="Max Attendees"
         />
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" onChange={handleFileChange} className="border p-3 w-[20vw]" />
         <button
-          className="bg-emerald-400 p-2 border rounded-md w-32"
+          className="bg-emerald-400 p-2 border rounded-md w-32 hover:bg-white
+          hover:border-2 hover:border-emerald-500 hover:text-emerald-700"
           onClick={handleCreateEvent}
         >
           Create Event

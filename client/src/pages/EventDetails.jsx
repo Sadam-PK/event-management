@@ -140,8 +140,8 @@ export default function EventDetails() {
           </div>
         )}
       </div>
-      <div className="flex w-[40vw] border">
-        <img src={event?.imgPath} alt="" className="h-20" />
+      <div className="flex w-[40vw] border items-center justify-center p2 ">
+        <img src={event?.imgPath} alt="" className="overflow-hidden" />
       </div>
     </div>
   );
