@@ -91,7 +91,7 @@ router.get("/me", authenticateJwt, async (req, res) => {
 });
 
 // Search users
-router.get("/search_users",authenticateJwt, async (req, res) => {
+router.get("/search_users", authenticateJwt, async (req, res) => {
   try {
     const { query } = req.query; // The search query parameter
 
@@ -184,7 +184,7 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
 
     // Pagination parameters from query string
     const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 3; // Default to 10 events per page
+    const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
 
     // Calculate the number of documents to skip
     const skip = (page - 1) * limit;
@@ -211,18 +211,36 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
 // Find all created events
 router.get("/events", authenticateJwt, async (req, res) => {
   try {
+    // Pagination parameters from query string
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
+
+    // Calculate the number of documents to skip
+    const skip = (page - 1) * limit;
+
     const events = await Event.find({})
       .populate("createdBy", "username")
-      .populate("attendees", "username");
+      .populate("attendees", "username")
+      .skip(skip)
+      .limit(limit);
 
-    res.status(200).json(events);
+    // Get total count of events (to calculate total pages)
+    const totalEvents = await Event.countDocuments({});
+
+    res
+      .status(200)
+      .json({
+        events,
+        currentPage: page,
+        totalPages: Math.ceil(totalEvents / limit),
+      });
   } catch (error) {
     res.status(500).json({ error: "Error fetching events" });
   }
 });
 
 // Find an events
-router.get("/events/:id",authenticateJwt, async (req, res) => {
+router.get("/events/:id", authenticateJwt, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -362,7 +380,7 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
 });
 
 // Search events
-router.get("/search_events",authenticateJwt, async (req, res) => {
+router.get("/search_events", authenticateJwt, async (req, res) => {
   try {
     const { query } = req.query; // The search query parameter
 
