@@ -67,6 +67,8 @@ export default function EventDetails() {
       if (response.ok) {
         console.log("Successfully joined the event:", data);
         toast("Event Joined");
+      } else if (response.status === 401) {
+        toast.warning("No more slots available");
       } else {
         // console.error("Error joining event:", data.message);
         toast.warning("User has already joined.");
@@ -126,6 +128,14 @@ export default function EventDetails() {
         <div>Date: {moment(event?.date).format("L")}</div>
         <div>Location: {event?.location}</div>
         <div>Capacity: {event?.maxAttendees}</div>
+        {isOrganizer && (
+          <div>
+            Attendees:
+            {event?.attendees.map((e, i) => {
+              return <div key={i}>{e.username}</div>;
+            })}
+          </div>
+        )}
         {!isOrganizer && (
           <div>
             <div className="flex gap-2">

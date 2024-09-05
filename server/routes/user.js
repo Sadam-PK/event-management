@@ -192,6 +192,7 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
     // Find events created by the logged-in user with pagination
     const events = await Event.find({ createdBy: userId })
       .populate("createdBy", "username")
+      .populate("attendees", "username")
       .skip(skip)
       .limit(limit);
 
@@ -227,13 +228,11 @@ router.get("/events", authenticateJwt, async (req, res) => {
     // Get total count of events (to calculate total pages)
     const totalEvents = await Event.countDocuments({});
 
-    res
-      .status(200)
-      .json({
-        events,
-        currentPage: page,
-        totalPages: Math.ceil(totalEvents / limit),
-      });
+    res.status(200).json({
+      events,
+      currentPage: page,
+      totalPages: Math.ceil(totalEvents / limit),
+    });
   } catch (error) {
     res.status(500).json({ error: "Error fetching events" });
   }
@@ -358,6 +357,13 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the max number of attendees has been reached
+    if (event.attendees.length >= event.maxAttendees) {
+      return res
+        .status(401)
+        .json({ message: "Maximum number of attendees reached" });
     }
 
     // Check if the user is already an attendee
