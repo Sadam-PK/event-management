@@ -386,22 +386,29 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
 });
 
 // Search events
-router.get("/search_events", authenticateJwt, async (req, res) => {
+router.get("/search_events", async (req, res) => {
   try {
-    const { query } = req.query; // The search query parameter
+    const keyword = req.query.q || '';
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
 
-    if (!query) {
-      return res.status(400).json({ message: "Search query is required" });
-    }
+    const totalEvents = await Event.countDocuments({
+      title: { $regex: keyword, $options: 'i' }
+    });
 
-    // Perform a search based on the query
     const events = await Event.find({
-      title: { $regex: query, $options: "i" }, // Case-insensitive search
-    }).populate("createdBy", "username");
+      title: { $regex: keyword, $options: 'i' }
+    }).skip(skip).limit(limit);
 
-    res.status(200).json(events);
+    res.json({
+      events,
+      totalEvents,
+      totalPages: Math.ceil(totalEvents / limit),
+      currentPage: page
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error searching events" });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
