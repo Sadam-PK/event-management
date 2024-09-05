@@ -10,6 +10,8 @@ export default function EventsList() {
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(3);
   const [isSearching, setIsSearching] = useState(false);
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const navigate = useNavigate();
 
@@ -17,21 +19,20 @@ export default function EventsList() {
     navigate(`/event/${id}`);
   };
 
-  const fetchEvents = async (page, query = "") => {
+  const fetchEvents = async (page, query = "", sortBy = "createdAt", sortOrder = "asc") => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/user/search_events",
-        {
-          params: {
-            q: query,
-            page: page,
-            limit: limit,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axios.get("http://localhost:3000/user/events", {
+        params: {
+          q: query,
+          page: page,
+          limit: limit,
+          sortBy: sortBy,
+          sortOrder: sortOrder,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
       setEvents(response.data.events);
       setCurrentPage(response.data.currentPage);
@@ -42,8 +43,8 @@ export default function EventsList() {
   };
 
   useEffect(() => {
-    fetchEvents(currentPage, isSearching ? query : "");
-  }, [currentPage, isSearching, query]);
+    fetchEvents(currentPage, isSearching ? query : "", sortBy, sortOrder);
+  }, [currentPage, isSearching, query, sortBy, sortOrder]);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -60,7 +61,15 @@ export default function EventsList() {
   const handleSearch = () => {
     setIsSearching(true);
     setCurrentPage(1); // Reset to the first page for search
-    fetchEvents(1, query);
+    fetchEvents(1, query, sortBy, sortOrder);
+  };
+
+  const handleSortChange = (e) => {
+    const [field, order] = e.target.value.split(":");
+    setSortBy(field);
+    setSortOrder(order);
+    setCurrentPage(1); // Reset to the first page for new sorting
+    fetchEvents(1, query, field, order);
   };
 
   return (
@@ -81,6 +90,14 @@ export default function EventsList() {
           >
             Search
           </button>
+        </div>
+        <div className="ml-4 rounded-sm">
+          <select onChange={handleSortChange} className="border outline-none p-2">
+            <option value="createdAt:asc">Oldest</option>
+            <option value="createdAt:desc">Latest</option>
+            <option value="title:asc">Ascending</option>
+            <option value="title:desc">Descending</option>
+          </select>
         </div>
       </div>
       <h2 className="font-bold text-xl">Events List</h2>

@@ -209,24 +209,26 @@ router.get("/my_events", authenticateJwt, async (req, res) => {
   }
 });
 
-// Find all created events
+// Find all created events with optional search
 router.get("/events", authenticateJwt, async (req, res) => {
   try {
-    // Pagination parameters from query string
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
-
-    // Calculate the number of documents to skip
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
     const skip = (page - 1) * limit;
+    const keyword = req.query.q || ""; // Optional search keyword
+    const sortBy = req.query.sortBy || "createdAt"; // Default sorting field
+    const sortOrder = req.query.sortOrder === "desc" ? -1 : 1; // Default to ascending order
 
-    const events = await Event.find({})
+    const query = keyword ? { title: { $regex: keyword, $options: "i" } } : {};
+
+    const events = await Event.find(query)
       .populate("createdBy", "username")
       .populate("attendees", "username")
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder }); // Apply sorting
 
-    // Get total count of events (to calculate total pages)
-    const totalEvents = await Event.countDocuments({});
+    const totalEvents = await Event.countDocuments(query);
 
     res.status(200).json({
       events,
@@ -238,6 +240,64 @@ router.get("/events", authenticateJwt, async (req, res) => {
   }
 });
 
+// // Find all created events
+// router.get("/events", authenticateJwt, async (req, res) => {
+//   try {
+//     // Pagination parameters from query string
+//     const page = parseInt(req.query.page) || 1; // Default to page 1
+//     const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
+
+//     // Calculate the number of documents to skip
+//     const skip = (page - 1) * limit;
+
+//     const events = await Event.find({})
+//       .populate("createdBy", "username")
+//       .populate("attendees", "username")
+//       .skip(skip)
+//       .limit(limit);
+
+//     // Get total count of events (to calculate total pages)
+//     const totalEvents = await Event.countDocuments({});
+
+//     res.status(200).json({
+//       events,
+//       currentPage: page,
+//       totalPages: Math.ceil(totalEvents / limit),
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: "Error fetching events" });
+//   }
+// });
+
+// // Search events
+// router.get("/search_events", async (req, res) => {
+//   try {
+//     const keyword = req.query.q || "";
+//     const page = parseInt(req.query.page, 10) || 1;
+//     const limit = parseInt(req.query.limit, 10) || 3;
+//     const skip = (page - 1) * limit;
+
+//     const totalEvents = await Event.countDocuments({
+//       title: { $regex: keyword, $options: "i" },
+//     });
+
+//     const events = await Event.find({
+//       title: { $regex: keyword, $options: "i" },
+//     })
+//       .skip(skip)
+//       .limit(limit);
+
+//     res.json({
+//       events,
+//       totalEvents,
+//       totalPages: Math.ceil(totalEvents / limit),
+//       currentPage: page,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
+
 // Find an events
 router.get("/events/:id", authenticateJwt, async (req, res) => {
   const { id } = req.params;
@@ -245,6 +305,7 @@ router.get("/events/:id", authenticateJwt, async (req, res) => {
   try {
     // Find the event by ID and populate if needed
     const event = await Event.findById(id)
+      // const page = = pa
       .populate("createdBy", "username")
       .populate("attendees", "username");
 
@@ -382,33 +443,6 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
     res.status(200).json({ message: "Attendee added successfully", event });
   } catch (error) {
     res.status(500).json({ message: "An error occurred", error });
-  }
-});
-
-// Search events
-router.get("/search_events", async (req, res) => {
-  try {
-    const keyword = req.query.q || '';
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1) * limit;
-
-    const totalEvents = await Event.countDocuments({
-      title: { $regex: keyword, $options: 'i' }
-    });
-
-    const events = await Event.find({
-      title: { $regex: keyword, $options: 'i' }
-    }).skip(skip).limit(limit);
-
-    res.json({
-      events,
-      totalEvents,
-      totalPages: Math.ceil(totalEvents / limit),
-      currentPage: page
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
   }
 });
 
