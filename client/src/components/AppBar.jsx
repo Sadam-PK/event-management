@@ -17,7 +17,7 @@ export default function AppBar() {
           },
         });
         setUser(response.data.username);
-        console.log(response.data);
+        // console.log(response.data);
         navigate("/");
         // Accessing the correct data field
       } catch (error) {

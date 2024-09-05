@@ -17,7 +17,7 @@ export default function LandingPage() {
           },
         });
         setUser(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         //   navigate("/");
         // Accessing the correct data field
       } catch (error) {
@@ -27,7 +27,7 @@ export default function LandingPage() {
 
     fetchUser();
   }, []);
-  console.log(user?.role);
+  // console.log(user?.role);
   if (user?.role == "organizer") {
     return <OrganizerPanel />;
   }

@@ -68,7 +68,7 @@ export default function EventDetails() {
         console.log("Successfully joined the event:", data);
         toast("Event Joined");
       } else {
-        console.error("Error joining event:", data.message);
+        // console.error("Error joining event:", data.message);
         toast.warning("User has already joined.");
       }
     } catch (error) {
@@ -100,7 +100,7 @@ export default function EventDetails() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Successfully deleted the event:", data);
+        // console.log("Successfully deleted the event:", data);
         toast.info("Event Deleted");
         navigate("/my-event");
       } else {
