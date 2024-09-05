@@ -72,8 +72,15 @@ export default function EventsList() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search events"
+            className="border outline-none p-2"
           />
-          <button onClick={handleSearch}>Search</button>
+          <button
+            onClick={handleSearch}
+            className="border outline-none p-2 rounded-r-xl
+            bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+          >
+            Search
+          </button>
         </div>
       </div>
       <h2 className="font-bold text-xl">Events List</h2>
