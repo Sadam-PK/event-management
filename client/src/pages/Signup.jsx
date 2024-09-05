@@ -6,14 +6,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
 export default function Signup() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleNameChange = (event) => setName(event.target.value);
   const handleUsernameChange = (event) => setUsername(event.target.value);
@@ -39,6 +38,7 @@ export default function Signup() {
       />
       <CustomInput
         placeholder="Password"
+        type="password"
         value={password}
         onChange={handlePasswordChange}
       />
@@ -63,7 +63,7 @@ export default function Signup() {
             })
             .then((data) => {
               localStorage.setItem("token", data.token);
-              toast("Signed Up Successfully..")
+              toast("Signed Up Successfully..");
               navigate("/");
             });
         }}
@@ -72,8 +72,7 @@ export default function Signup() {
       </button>
       <div className="p-5">
         <p className="text-gray-500">
-          Already have an account?{" "}
-          {/* <Link to="/login">Login</Link> */}
+          Already have an account? {/* <Link to="/login">Login</Link> */}
           <a href="/login" className="text-blue-700">
             Login here
           </a>

@@ -26,6 +26,7 @@ export default function Login() {
       />
       <CustomInput
         placeholder="Password"
+        type="password"
         value={password}
         onChange={handlePasswordChange}
       />
