@@ -3,7 +3,7 @@ import axios from "axios";
 import OrganizerPanel from "../pages/OrganizerPanel";
 import AttendeePanel from "./AttendeePanel";
 import Login from "./Login";
-
+import Dashboard from "../pages/admin/Dashboard";
 
 export default function LandingPage() {
   const [user, setUser] = useState();
@@ -17,9 +17,6 @@ export default function LandingPage() {
           },
         });
         setUser(response.data);
-        // console.log(response.data);
-        //   navigate("/");
-        // Accessing the correct data field
       } catch (error) {
         console.error("Error fetching events:", error);
       }
@@ -28,6 +25,9 @@ export default function LandingPage() {
     fetchUser();
   }, []);
   // console.log(user?.role);
+  if (user?.role == "admin") {
+    return <Dashboard />;
+  }
   if (user?.role == "organizer") {
     return <OrganizerPanel />;
   }
