@@ -73,10 +73,9 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const response = loginSchema.safeParse({ username, password });
-  console.log(response);
 
   if (response.success) {
-    const user = await User.findOne({ username: response.username });
+    const user = await User.findOne({ username: response.data.username });
 
     if (user && user.password === password) {
       // Assuming password is stored as plain text
