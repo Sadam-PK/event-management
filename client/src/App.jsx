@@ -7,7 +7,8 @@ import UpdateProfile from "./pages/UpdateProfile";
 import CreateEvent from "./pages/CreateEvent";
 import EventsList from "./pages/EventsList";
 import EventDetails from "./pages/EventDetails";
-import UsersList from "./pages/UsersList";
+// import UsersList from "./pages/UsersList";
+import UsersList from "./pages/admin/UsersList";
 import AppBar from "./components/AppBar";
 import Header from "./components/Header";
 import AttendeePanel from "./pages/AttendeePanel";
@@ -30,7 +31,7 @@ function App() {
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/events" element={<EventsList />} />
         <Route path="/event/:id" element={<EventDetails />} />
-        <Route path="/users" element={<UsersList />} />
+        <Route path="/users-list" element={<UsersList />} />
         <Route path="/attendee-panel" element={<AttendeePanel/>}/>
         <Route path="/organizer-panel" element={<OrganizerPanel/>}/>
         <Route path="/my-event" element={<MyEvent/>}/>

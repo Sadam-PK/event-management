@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import ViewEvents from "../admin/ViewEvents"
+import ViewUsers from "../admin/ViewUsers"
 
 export default function Dashboard() {
   const [events, setEvents] = useState([]);
@@ -24,14 +26,12 @@ export default function Dashboard() {
       <div className="flex justify-start px-3 bg-emerald-200">
         Admin Dashboard
       </div>
-      <div>
-        {events.length > 0 ? (
-          events.map((e, i) => {
-            return <div key={i}>{e.title}</div>;
-          })
-        ) : (
-          <p>No events available</p>
-        )}
+      <div className="grid grid-cols-4 justify-center gap-5  pt-[20vh]">
+        <div />
+        <ViewEvents/>
+        <ViewUsers/>
+        <div />
+       
       </div>
     </div>
   );

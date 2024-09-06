@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import UserCard from "../../components/UserCard"
 import axios from "axios";
 
 export default function UsersList() {
@@ -22,15 +23,8 @@ export default function UsersList() {
   return (
     <div>
       users list
-      <div>
-        {users.length > 0 ? (
-          users.map((e, i) => {
-            return <div key={i}>{e.username}</div>;
-          })
-        ) : (
-          <p>No User available</p>
-        )}
-      </div>
+      <UserCard users={users}/>
     </div>
   );
 }
+
