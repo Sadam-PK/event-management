@@ -8,7 +8,19 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const cloudinary = require("../helper/cloudinaryConfig");
+const zod = require("zod");
 // const moment = require("moment");
+
+const loginSchema = zod.object({
+  username: zod.string().email(),
+  password: zod.string(),
+});
+
+const signUpSchema = zod.object({
+  role: zod.enum(["organizer", "attendee"]),
+  username: zod.string().email(),
+  password: zod.string(),
+});
 
 const imgConfig = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -40,28 +52,43 @@ router.get("/", (req, res) => {
 // Sign up user
 router.post("/signup", async (req, res) => {
   const { username, password, role } = req.body;
-  const user = await User.findOne({ username });
-  if (user) {
-    res.status(403).json({ message: "User already exists" });
+  const response = signUpSchema.safeParse({ username, password, role });
+
+  if (response.success) {
+    const user = await User.findOne({ username: response.username });
+    if (user) {
+      res.status(403).json({ message: "User already exists" });
+    } else {
+      const newUser = new User({ username, password, role });
+      await newUser.save();
+      const token = jwt.sign({ username, role }, SECRET, { expiresIn: "1h" });
+      res.json({ message: "User created successfully", token });
+    }
   } else {
-    const newUser = new User({ username, password, role });
-    await newUser.save();
-    const token = jwt.sign({ username, role }, SECRET, { expiresIn: "1h" });
-    res.json({ message: "User created successfully", token });
+    console.log(response.error);
   }
 });
 
 // Login user
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username, password });
-  if (user) {
-    const token = jwt.sign({ _id: user._id }, SECRET, {
-      expiresIn: "1h",
-    });
-    res.json({ message: "Logged in successfully", token });
+  const response = loginSchema.safeParse({ username, password });
+  console.log(response);
+
+  if (response.success) {
+    const user = await User.findOne({ username: response.username });
+
+    if (user && user.password === password) {
+      // Assuming password is stored as plain text
+      const token = jwt.sign({ _id: user._id }, SECRET, {
+        expiresIn: "1h",
+      });
+      res.json({ message: "Logged in successfully", token });
+    } else {
+      res.status(403).json({ message: "Invalid username or password" });
+    }
   } else {
-    res.status(403).json({ message: "Invalid username or password" });
+    res.status(400).json({ error: response.error.errors });
   }
 });
 
