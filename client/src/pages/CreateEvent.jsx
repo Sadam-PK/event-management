@@ -1,8 +1,11 @@
+// CreateEvent.js
 import { useState } from "react";
-import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { eventSchema } from '../../../common/zodSchema';
+import CustomInput from "../components/customInput";
+import { z } from "zod";
 
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
@@ -19,12 +22,13 @@ export default function CreateEvent() {
   const handleDescriptionChange = (event) => setDescription(event.target.value);
   const handleLocationChange = (event) => setLocation(event.target.value);
   const handleDateChange = (event) => setDate(event.target.value);
+
   const handleTimeChange = (event) => {
     const time24 = event.target.value;
-    setTime(convertTo12HourFormat(time24));
+    setTime(time24); // Store the time in 24-hour format
   };
-  const handleMaxAttendeesChange = (event) =>
-    setMaxAttendees(event.target.value);
+
+  const handleMaxAttendeesChange = (event) => setMaxAttendees(event.target.value);
   const handleFileChange = (event) => setFile(event.target.files[0]);
 
   const handleCreateEvent = async (e) => {
@@ -33,28 +37,41 @@ export default function CreateEvent() {
     // Convert maxAttendees to a number
     const maxAttendeesNumber = Number(maxAttendees);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("location", location);
-    formData.append("date", date);
-    formData.append("time", time);
-    formData.append("maxAttendees", maxAttendeesNumber);
-    if (file) {
-      formData.append("photo", file);
-    }
-
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
+    // Prepare form data
+    const formData = {
+      title,
+      description,
+      location,
+      date,
+      time,
+      maxAttendees: maxAttendeesNumber,
     };
 
     try {
+      // Validate form data
+      eventSchema.parse(formData);
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", title);
+      formDataToSend.append("description", description);
+      formDataToSend.append("location", location);
+      formDataToSend.append("date", date);
+      formDataToSend.append("time", time);
+      formDataToSend.append("maxAttendees", maxAttendeesNumber);
+      if (file) {
+        formDataToSend.append("photo", file);
+      }
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      };
+
       const response = await axios.post(
         "http://localhost:3000/user/create_event",
-        formData,
+        formDataToSend,
         config
       );
 
@@ -65,14 +82,19 @@ export default function CreateEvent() {
         toast.error("Error creating event: " + response.data.error);
       }
     } catch (error) {
-      console.error(
-        "Error creating event:",
-        error.response ? error.response.data : error.message
-      );
-      toast.error(
-        "Error creating event: " +
-          (error.response ? error.response.data.error : error.message)
-      );
+      if (error instanceof z.ZodError) {
+        // Display validation errors
+        error.errors.forEach((err) => toast.error(err.message));
+      } else {
+        console.error(
+          "Error creating event:",
+          error.response ? error.response.data : error.message
+        );
+        toast.error(
+          "Error creating event: " +
+            (error.response ? error.response.data.error : error.message)
+        );
+      }
     }
   };
 
@@ -80,13 +102,6 @@ export default function CreateEvent() {
     const today = new Date();
     today.setDate(today.getDate() + 1);
     return today.toISOString().split("T")[0];
-  };
-
-  const convertTo12HourFormat = (time) => {
-    const [hour, minute] = time.split(":").map(Number);
-    const period = hour >= 12 ? "PM" : "AM";
-    const adjustedHour = hour % 12 || 12;
-    return `${adjustedHour}:${minute < 10 ? "0" + minute : minute} ${period}`;
   };
 
   return (

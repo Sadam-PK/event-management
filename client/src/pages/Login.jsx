@@ -34,7 +34,7 @@ export default function Login() {
       const data = await response.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
-        window.location.reload()
+        window.location.reload();
         navigate("/");
       } else {
         toast.error("Login failed");
@@ -56,7 +56,6 @@ export default function Login() {
           value={username}
           onChange={handleUsernameChange}
         />
-        
       </div>
       <div className="w-full max-w-xs">
         <CustomInput
@@ -65,7 +64,6 @@ export default function Login() {
           value={password}
           onChange={handlePasswordChange}
         />
-       
       </div>
       <button
         className="bg-emerald-400 p-2 border rounded-md w-32"
