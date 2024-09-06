@@ -9,35 +9,40 @@ const multer = require("multer");
 const path = require("path");
 const cloudinary = require("../helper/cloudinaryConfig");
 const zod = require("zod");
+const { loginSchema } = require("../../common/zodSchema");
+const { signUpSchema } = require("../../common/zodSchema");
+const { eventSchema } = require("../../common/zodSchema");
 // const moment = require("moment");
 
 // ZOD - Login Schema
-const loginSchema = zod.object({
-  username: zod.string().email(),
-  password: zod.string(),
-});
+
+// ZOD login Schema
+// export const loginSchema = zod.object({
+//   username: zod.string().email(),
+//   password: zod.string(),
+// });
 
 // ZOD - Signup Schema
-const signUpSchema = zod.object({
-  role: zod.enum(["organizer", "attendee"]),
-  username: zod.string().email(),
-  password: zod.string(),
-});
+// const signUpSchema = zod.object({
+//   role: zod.enum(["organizer", "attendee"]),
+//   username: zod.string().email(),
+//   password: zod.string(),
+// });
 
 // ZOD - Event Schema
-const eventSchema = zod.object({
-  title: zod.string().min(1, "Title is required"),
-  description: zod.string().min(1, "Description is required"),
-  location: zod.string().min(1, "Location is required"),
-  date: zod
-    .string()
-    .refine((date) => !isNaN(Date.parse(date)), "Invalid date format"),
-  time: zod.string().optional(),
-  maxAttendees: zod
-    .number()
-    .int()
-    .positive("Max attendees must be a positive integer"),
-});
+// const eventSchema = zod.object({
+//   title: zod.string().min(1, "Title is required"),
+//   description: zod.string().min(1, "Description is required"),
+//   location: zod.string().min(1, "Location is required"),
+//   date: zod
+//     .string()
+//     .refine((date) => !isNaN(Date.parse(date)), "Invalid date format"),
+//   time: zod.string().optional(),
+//   maxAttendees: zod
+//     .number()
+//     .int()
+//     .positive("Max attendees must be a positive integer"),
+// });
 
 //
 const imgConfig = multer.diskStorage({
