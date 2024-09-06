@@ -11,17 +11,35 @@ const cloudinary = require("../helper/cloudinaryConfig");
 const zod = require("zod");
 // const moment = require("moment");
 
+// ZOD - Login Schema
 const loginSchema = zod.object({
   username: zod.string().email(),
   password: zod.string(),
 });
 
+// ZOD - Signup Schema
 const signUpSchema = zod.object({
   role: zod.enum(["organizer", "attendee"]),
   username: zod.string().email(),
   password: zod.string(),
 });
 
+// ZOD - Event Schema
+const eventSchema = zod.object({
+  title: zod.string().min(1, "Title is required"),
+  description: zod.string().min(1, "Description is required"),
+  location: zod.string().min(1, "Location is required"),
+  date: zod
+    .string()
+    .refine((date) => !isNaN(Date.parse(date)), "Invalid date format"),
+  time: zod.string().optional(),
+  maxAttendees: zod
+    .number()
+    .int()
+    .positive("Max attendees must be a positive integer"),
+});
+
+//
 const imgConfig = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, "./uploads");
@@ -40,13 +58,10 @@ const isImage = (req, file, callback) => {
   }
 };
 
+// multer
 const upload = multer({
   storage: imgConfig,
   fileFilter: isImage,
-});
-
-router.get("/", (req, res) => {
-  res.json();
 });
 
 // Sign up user
@@ -91,6 +106,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Current User
 router.get("/me", authenticateJwt, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -153,17 +169,17 @@ router.post(
   upload.single("photo"),
   async (req, res) => {
     try {
-      // cloudinary ----
+      // Convert maxAttendees to a number
+      req.body.maxAttendees = Number(req.body.maxAttendees);
 
-      // console.log(upload);
-      const { title } = req.body;
-      const { description } = req.body;
-      const { location } = req.body;
-      const { date } = req.body;
-      // const time = moment().format("HH:mm:ss");
-      const { time } = req.body;
-      const { maxAttendees } = req.body;
+      // Validate request body using Zod schema
+      const parsedData = eventSchema.parse(req.body);
+
+      // Cloudinary upload
       const upload = await cloudinary.uploader.upload(req.file.path);
+
+      const { title, description, location, date, time, maxAttendees } =
+        parsedData;
 
       // The user's ID is available from req.user, assuming your authenticateJwt middleware populates it
       const userId = req.user._id;
@@ -195,8 +211,13 @@ router.post(
       await organizer.save();
 
       res.status(201).json(event);
-      // console.log("File uploaded:", req.file);
     } catch (error) {
+      // Handle Zod validation errors
+      if (error instanceof zod.ZodError) {
+        console.error("Validation error:", error.errors);
+        return res.status(400).json({ error: error.errors });
+      }
+
       console.error("Error creating event:", error);
       res.status(500).json({ error: "Error creating event" });
     }

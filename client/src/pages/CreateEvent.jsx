@@ -7,13 +7,11 @@ import { toast } from "react-toastify";
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null); // Initialize as null
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [maxAttendees, setMaxAttendees] = useState("");
-
-  // const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -21,7 +19,10 @@ export default function CreateEvent() {
   const handleDescriptionChange = (event) => setDescription(event.target.value);
   const handleLocationChange = (event) => setLocation(event.target.value);
   const handleDateChange = (event) => setDate(event.target.value);
-  const handleTimeChange = (event) => setTime(event.target.value);
+  const handleTimeChange = (event) => {
+    const time24 = event.target.value;
+    setTime(convertTo12HourFormat(time24));
+  };
   const handleMaxAttendeesChange = (event) =>
     setMaxAttendees(event.target.value);
   const handleFileChange = (event) => setFile(event.target.files[0]);
@@ -29,14 +30,19 @@ export default function CreateEvent() {
   const handleCreateEvent = async (e) => {
     e.preventDefault();
 
+    // Convert maxAttendees to a number
+    const maxAttendeesNumber = Number(maxAttendees);
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("location", location);
     formData.append("date", date);
     formData.append("time", time);
-    formData.append("maxAttendees", maxAttendees);
-    formData.append("photo", file);
+    formData.append("maxAttendees", maxAttendeesNumber);
+    if (file) {
+      formData.append("photo", file);
+    }
 
     const config = {
       headers: {
@@ -53,26 +59,34 @@ export default function CreateEvent() {
       );
 
       if (response.status === 201) {
-        // console.log("Event created successfully:", response.data);
-        toast("Event Created...");
+        toast.success("Event Created...");
         navigate("/");
       } else {
-        console.error("Error creating event:", response.data.error);
+        toast.error("Error creating event: " + response.data.error);
       }
     } catch (error) {
       console.error(
         "Error creating event:",
         error.response ? error.response.data : error.message
       );
+      toast.error(
+        "Error creating event: " +
+          (error.response ? error.response.data.error : error.message)
+      );
     }
   };
 
-  // minimun date
   const today = () => {
     const today = new Date();
-    today.setDate(today.getDate() + 1); // Adds one day to the current date
-    const oneDayAhead = today.toISOString().split("T")[0];
-    return oneDayAhead;
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  };
+
+  const convertTo12HourFormat = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    const period = hour >= 12 ? "PM" : "AM";
+    const adjustedHour = hour % 12 || 12;
+    return `${adjustedHour}:${minute < 10 ? "0" + minute : minute} ${period}`;
   };
 
   return (
@@ -120,7 +134,11 @@ export default function CreateEvent() {
           className="border p-3"
           placeholder="Max Attendees"
         />
-        <input type="file" onChange={handleFileChange} className="border p-3 w-[20vw]" />
+        <input
+          type="file"
+          onChange={handleFileChange}
+          className="border p-3 w-[20vw]"
+        />
         <button
           className="bg-emerald-400 p-2 border rounded-md w-32 hover:bg-white
           hover:border-2 hover:border-emerald-500 hover:text-emerald-700"
