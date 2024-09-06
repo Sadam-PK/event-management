@@ -22,7 +22,7 @@ export default function UsersList() {
 
   return (
     <div>
-      users list
+      <div><h2 className="mb-10 px-3 bg-emerald-200">Users List</h2></div>
       <UserCard users={users}/>
     </div>
   );
