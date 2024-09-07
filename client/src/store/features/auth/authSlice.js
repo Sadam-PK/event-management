@@ -23,7 +23,13 @@ const initialState = {
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.status = "idle";
+      localStorage.removeItem("token");
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -32,6 +38,7 @@ export const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.status = "success";
         state.user = action.payload;
+        localStorage.setItem("token", action.payload.token); // Store token in localStorage
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -39,5 +46,8 @@ export const authSlice = createSlice({
       });
   },
 });
+
+// Export the logout action so it can be used in components
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

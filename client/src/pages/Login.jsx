@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../../common/zodSchema.js";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/features/auth/authSlice";
+import { login, logout } from "../store/features/auth/authSlice";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,7 +12,6 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Use useSelector to get auth state
   const auth = useSelector((state) => state.auth);
   
   const handleUsernameChange = (event) => setUsername(event.target.value);
@@ -38,12 +37,26 @@ export default function Login() {
     }
   };
 
-  // Redirect user if already logged in
   useEffect(() => {
     if (auth.user) {
       navigate("/");
     }
   }, [auth.user, navigate]);
+
+  useEffect(() => {
+    // Listen for token changes in localStorage, i.e., after logout
+    const handleStorageChange = () => {
+      if (!localStorage.getItem("token")) {
+        dispatch(logout());
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [dispatch]);
 
   return (
     <div className="flex flex-col w-auto h-screen p-3 gap-3 justify-center items-center mx-auto m-10">
@@ -78,7 +91,6 @@ export default function Login() {
         </p>
       </div>
       {auth.status === "loading" && <p>Loading...</p>}
-      {auth.error && <p className="text-red-500">{auth.error}</p>}
     </div>
   );
 }

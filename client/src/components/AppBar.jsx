@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../store/features/auth/authSlice";
+import { logout } from "../store/features/auth/authSlice";
 
 export default function AppBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -24,10 +23,10 @@ export default function AppBar() {
         </h2>
         <ul className="flex flex-row gap-5">
           <li>
-            <Link to="/login">login</Link>
+            <Link to="/login">Login</Link>
           </li>
           <li>
-            <Link to="/signup">signup</Link>
+            <Link to="/signup">Signup</Link>
           </li>
         </ul>
       </div>
@@ -37,19 +36,18 @@ export default function AppBar() {
   return (
     <div className="bg-emerald-300 p-3 flex justify-between">
       <h2 className="font-bold">
-        <a href="/">Event Management</a>
+        <Link to="/">Event Management</Link>
       </h2>
       <ul className="flex flex-row gap-5">
         <li>{user.username}</li>
         <li
           className="cursor-pointer"
           onClick={() => {
-            localStorage.removeItem("token"); // Remove token from localStorage
-            dispatch(login(null)); // Clear user state in Redux
+            dispatch(logout()); // Dispatch the logout action to clear Redux state
             navigate("/login");
           }}
         >
-          logout
+          Logout
         </li>
       </ul>
     </div>
