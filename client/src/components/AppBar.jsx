@@ -43,7 +43,7 @@ export default function AppBar() {
         <li
           className="cursor-pointer"
           onClick={() => {
-            dispatch(logout()); // Dispatch the logout action to clear Redux state
+            dispatch(logout());
             navigate("/login");
           }}
         >
