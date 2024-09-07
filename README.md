@@ -13,3 +13,5 @@ multer
 couldinary
 moment (front-back both)
 react-paginate
+npm install react-redux (react)
+ npm install @reduxjs/toolkit (react)

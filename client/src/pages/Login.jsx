@@ -1,54 +1,52 @@
 import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { loginSchema } from "../../../common/zodSchema";
+import { loginSchema } from "../../../common/zodSchema.js";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/features/auth/authSlice";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
+  // Use useSelector to get auth state
+  const auth = useSelector((state) => state.auth);
+  
   const handleUsernameChange = (event) => setUsername(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
   const handleSubmit = async () => {
-    // Validate the form data using Zod
     const validationResult = loginSchema.safeParse({ username, password });
+    if (!validationResult.success) {
+      toast.error("Invalid input");
+      return;
+    }
 
     try {
-      const response = await fetch("http://localhost:3000/user/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: validationResult.data.username,
-          password: validationResult.data.password,
-        }),
-        headers: { "Content-type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("Login failed");
-      }
-
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.reload();
+      const response = await dispatch(login(validationResult.data)).unwrap();
+      if (response.token) {
+        localStorage.setItem("token", response.token);
         navigate("/");
       } else {
-        toast.error("Login failed");
+        console.log("Token is null");
       }
     } catch (error) {
-      toast.error("An error occurred");
+      toast.error("Login failed");
     }
   };
 
+  // Redirect user if already logged in
+  useEffect(() => {
+    if (auth.user) {
+      navigate("/");
+    }
+  }, [auth.user, navigate]);
+
   return (
-    <div
-      className="flex flex-col w-auto h-screen p-3 gap-3 
-      justify-center items-center mx-auto m-10"
-    >
+    <div className="flex flex-col w-auto h-screen p-3 gap-3 justify-center items-center mx-auto m-10">
       <h2 className="font-bold text-xl">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
@@ -79,6 +77,8 @@ export default function Login() {
           </a>
         </p>
       </div>
+      {auth.status === "loading" && <p>Loading...</p>}
+      {auth.error && <p className="text-red-500">{auth.error}</p>}
     </div>
   );
 }

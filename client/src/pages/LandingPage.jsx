@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import OrganizerPanel from "../pages/OrganizerPanel";
+import OrganizerPanel from "./OrganizerPanel";
 import AttendeePanel from "./AttendeePanel";
 import Login from "./Login";
-import Dashboard from "../pages/admin/Dashboard";
+import Dashboard from "./admin/Dashboard";
 
 export default function LandingPage() {
   const [user, setUser] = useState();

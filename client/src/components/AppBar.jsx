@@ -1,45 +1,33 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Login from "../pages/Login";
-import axios from "axios";
-import Attendee from "../pages/AttendeePanel";
+import { login } from "../store/features/auth/authSlice";
 
 export default function AppBar() {
   const navigate = useNavigate();
-  const [user, setUser] = useState();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/user/me`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        setUser(response.data.username);
-        // console.log(response.data);
-        navigate("/");
-        // Accessing the correct data field
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-
-    fetchEvents();
-  }, []);
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   if (!user) {
     return (
       <div className="bg-emerald-300 p-3 flex justify-between">
         <h2 className="font-bold">
-          <a href="/">Event Management</a>
+          <Link to="/">Event Management</Link>
         </h2>
         <ul className="flex flex-row gap-5">
           <li>
-            <a href="/login">login</a>
+            <Link to="/login">login</Link>
           </li>
           <li>
-            <a href="/signup">signup</a>
+            <Link to="/signup">signup</Link>
           </li>
         </ul>
       </div>
@@ -52,14 +40,13 @@ export default function AppBar() {
         <a href="/">Event Management</a>
       </h2>
       <ul className="flex flex-row gap-5">
-        <li>{user}</li>
+        <li>{user.username}</li>
         <li
           className="cursor-pointer"
           onClick={() => {
-            localStorage.setItem("token", null);
-            setUser({ user: null });
-            window.location.reload();
-            navigate("/");
+            localStorage.removeItem("token"); // Remove token from localStorage
+            dispatch(login(null)); // Clear user state in Redux
+            navigate("/login");
           }}
         >
           logout

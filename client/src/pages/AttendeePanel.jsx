@@ -1,4 +1,4 @@
-import EventsList from "../pages/EventsList";
+import EventsList from "./EventsList";
 
 export default function AttendeePanel() {
   return <EventsList />;
