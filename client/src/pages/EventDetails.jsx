@@ -117,7 +117,7 @@ export default function EventDetails() {
 
   // ---- Check if the user is the organizer of the event ----
   const isOrganizer = user && event?.createdBy?.username === user.username;
-  const isAdmin = user?.role==="admin"
+  const isAdmin = user?.role === "admin";
 
   return (
     <div className=" flex flex-row mx-auto h-auto p-10 gap-2">
@@ -137,13 +137,6 @@ export default function EventDetails() {
             })}
           </div>
         )}
-        {/* {isAdmin && (
-          <div>
-            <div className="flex gap-2">
-              <CustomButton name="Delete" onClick={handleDeleteClick} />
-            </div>
-          </div>
-        )} */}
 
         {!isOrganizer && !isAdmin && (
           <div>

@@ -377,7 +377,7 @@ const fs = require("fs");
     async (req, res) => {
       try {
         const { eventId } = req.params;
-        const userId = req.user._id; 
+        const userId = req.user._id;
 
         // Find the event by ID
         const event = await Event.findById(eventId);
@@ -404,7 +404,6 @@ const fs = require("fs");
             .status(400)
             .json({ message: "User is already an attendee" });
         }
-
         // Add the user to the event's attendees list
         event.attendees.push(userId);
         await event.save();
