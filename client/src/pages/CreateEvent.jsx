@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { eventSchema } from '../../../common/zodSchema';
+import { eventSchema } from "../../../common/zodSchema";
 import CustomInput from "../components/customInput";
 import { z } from "zod";
+import { Audio } from "react-loader-spinner";
 
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
@@ -15,6 +16,7 @@ export default function CreateEvent() {
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [maxAttendees, setMaxAttendees] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,12 +30,14 @@ export default function CreateEvent() {
     setTime(time24); // Store the time in 24-hour format
   };
 
-  const handleMaxAttendeesChange = (event) => setMaxAttendees(event.target.value);
+  const handleMaxAttendeesChange = (event) =>
+    setMaxAttendees(event.target.value);
   const handleFileChange = (event) => setFile(event.target.files[0]);
 
+  // event creation handle
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     // Convert maxAttendees to a number
     const maxAttendeesNumber = Number(maxAttendees);
 
@@ -81,6 +85,7 @@ export default function CreateEvent() {
       } else {
         toast.error("Error creating event: " + response.data.error);
       }
+      setLoading(false);
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Display validation errors
@@ -95,6 +100,7 @@ export default function CreateEvent() {
             (error.response ? error.response.data.error : error.message)
         );
       }
+      setLoading(false);
     }
   };
 
@@ -103,7 +109,14 @@ export default function CreateEvent() {
     today.setDate(today.getDate() + 1);
     return today.toISOString().split("T")[0];
   };
-
+  if (loading == true) {
+    return (
+      <div className="justify-center items-center flex flex-col h-screen gap-2">
+        <Audio height="80" width="80" color="green" ariaLabel="loading" />
+        <div>creating..</div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col items-center h-screen justify-center">
       <h2 className="font-bold mb-10 text-xl">Create Event</h2>
