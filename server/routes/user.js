@@ -9,6 +9,8 @@ const multer = require("multer");
 const path = require("path");
 const cloudinary = require("../helper/cloudinaryConfig");
 const zod = require("zod");
+const fs = require("fs");
+
 (async () => {
   const { loginSchema, signUpSchema, eventSchema } = await import(
     "../../common/zodSchema.js"
@@ -182,6 +184,12 @@ const zod = require("zod");
         // Cloudinary upload
         const upload = await cloudinary.uploader.upload(req.file.path);
 
+        // Remove the file from the local uploads folder
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error("Error deleting file:", err);
+          }
+        });
         const { title, description, location, date, time, maxAttendees } =
           parsedData;
 
