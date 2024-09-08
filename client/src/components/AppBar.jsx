@@ -45,7 +45,7 @@ export default function AppBar() {
         <Link to="/">Event Management</Link>
       </h2>
       <ul className="flex flex-row gap-5">
-        <li>{currentUser.username}</li>
+        <li>{currentUser?.username}</li>
         <li
           className="cursor-pointer"
           onClick={() => {
