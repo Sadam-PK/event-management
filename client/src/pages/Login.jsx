@@ -6,12 +6,14 @@ import { loginSchema } from "../../../common/zodSchema.js";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/features/auth/authSlice";
 import { user } from "../store/features/user/userSlice";
+import { Audio } from "react-loader-spinner";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+  const { status } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -60,6 +62,14 @@ export default function Login() {
     };
   }, [dispatch]);
 
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Audio height="80" width="80" color="green" ariaLabel="loading" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col w-auto h-screen p-3 gap-3 justify-center items-center mx-auto m-10">
       <h2 className="font-bold text-xl">Sign In</h2>
@@ -92,7 +102,6 @@ export default function Login() {
           </a>
         </p>
       </div>
-      {/* {auth.status === "loading" && <p>Loading...</p>} */}
     </div>
   );
 }

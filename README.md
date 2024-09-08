@@ -16,3 +16,4 @@ react-paginate
 npm install react-redux (react)
  npm install @reduxjs/toolkit (react)
  fs in backend
+ npm install react-loader-spinner --save (react)

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, user } from "../store/features/user/userSlice";
+import { Audio } from "react-loader-spinner";
+
 
 export default function AppBar() {
   const navigate = useNavigate();
@@ -17,9 +19,11 @@ export default function AppBar() {
     }
   }, [currentUser, status, navigate, dispatch]);
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
+  // if (status === "loading") {
+  //   return (
+  //     <Audio height="100" width="100" color="emerald" ariaLabel="Loading"></Audio>
+  //   );
+  // }
 
   if (!currentUser) {
     return (
