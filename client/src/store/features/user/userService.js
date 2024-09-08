@@ -14,7 +14,7 @@ const getUser = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching user data:", error);
+    // console.error("Error fetching user data:", error);
     throw error;
   }
 };

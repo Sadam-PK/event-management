@@ -8,12 +8,11 @@ export const user = createAsyncThunk(
       const response = await userService.getUser();
       return response;
     } catch (error) {
-      console.error("Error in user thunk:", error); // Add this line
+      // console.error("Error in user thunk:", error);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
-
 
 const initialState = {
   user: null,
@@ -49,7 +48,6 @@ export const userSlice = createSlice({
       });
   },
 });
-
 
 export const { logout } = userSlice.actions;
 export default userSlice.reducer;
