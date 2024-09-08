@@ -5,14 +5,15 @@ import { toast } from "react-toastify";
 import { loginSchema } from "../../../common/zodSchema.js";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/features/auth/authSlice";
+import { user } from "../store/features/user/userSlice";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const auth = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
 
   const handleUsernameChange = (event) => setUsername(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
@@ -28,6 +29,7 @@ export default function Login() {
       const response = await dispatch(login(validationResult.data)).unwrap();
       if (response.token) {
         localStorage.setItem("token", response.token);
+        dispatch(user());
         navigate("/");
       } else {
         console.log("Token is null");

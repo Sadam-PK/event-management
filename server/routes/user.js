@@ -120,10 +120,7 @@ const zod = require("zod");
       // console.log(userId);
 
       // Find the logged-in user by their ID
-      const user = await User.findOne({ _id: userId }).populate(
-        "username",
-        "role"
-      );
+      const user = await User.findById({ _id: userId }).select("username role");
 
       // If no user is found, return a 404 response
       if (!user) {

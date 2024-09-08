@@ -1,21 +1,27 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../store/features/auth/authSlice";
+import { logout, user } from "../store/features/user/userSlice";
 
 export default function AppBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const { user: currentUser, status } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!user) {
+    if (status === "idle") {
+      dispatch(user());
+    }
+    if (!currentUser && status === "success") {
       navigate("/login");
     }
-  }, [user, navigate]);
+  }, [currentUser, status, navigate, dispatch]);
 
-  if (!user) {
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (!currentUser) {
     return (
       <div className="bg-emerald-300 p-3 flex justify-between">
         <h2 className="font-bold">
@@ -39,7 +45,7 @@ export default function AppBar() {
         <Link to="/">Event Management</Link>
       </h2>
       <ul className="flex flex-row gap-5">
-        <li>{user.username}</li>
+        <li>{currentUser.username}</li>
         <li
           className="cursor-pointer"
           onClick={() => {
