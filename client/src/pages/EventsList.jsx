@@ -23,7 +23,7 @@ export default function EventsList() {
         query,
         sortBy: "createdAt",
         sortOrder: "asc",
-        limit: 3,
+        limit: 6,
       })
     );
   };
@@ -36,7 +36,7 @@ export default function EventsList() {
         query,
         sortBy: field,
         sortOrder: order,
-        limit: 3,
+        limit: 6,
       })
     );
   };
@@ -48,7 +48,7 @@ export default function EventsList() {
         query: "",
         sortBy: "createdAt",
         sortOrder: "asc",
-        limit: 3,
+        limit: 6,
       })
     );
   }, [dispatch, currentPage]);
@@ -68,7 +68,6 @@ export default function EventsList() {
       dispatch(setCurrentPage(currentPage + 1));
     }
   };
-
 
   return (
     <div className="p-10 space-y-5">
@@ -102,34 +101,42 @@ export default function EventsList() {
         </div>
       </div>
       <h2 className="font-bold text-xl">Events List</h2>
-      <div className="flex flex-wrap gap-3">
-        {events.map((e) => (
-          <EventCard key={e._id} event={e} onClick={() => handleClick(e._id)} />
-        ))}
+      <div className="flex flex-wrap gap-3 justify-center">
+        {events.length !== 0
+          ? events.map((e) => (
+              <EventCard
+                key={e._id}
+                event={e}
+                onClick={() => handleClick(e._id)}
+              />
+            ))
+          : "There is no event available at the moment.."}
       </div>
 
       {/* Pagination controls */}
-      <div className="flex justify-center items-center gap-5 mt-10">
-        <button
-          className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
+      {events.length > 0 && (
+        <div className="flex justify-center items-center gap-5 mt-10">
+          <button
+            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
           hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        <span className="text-gray-500">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+          <span className="text-gray-500">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
           hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

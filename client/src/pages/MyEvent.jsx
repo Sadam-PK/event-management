@@ -7,7 +7,7 @@ export default function MyEvent() {
   const [events, setEvents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 3;
+  const limit = 6;
   const navigate = useNavigate();
 
   const handleOnClick = (id) => {
@@ -50,11 +50,10 @@ export default function MyEvent() {
 
   return (
     <div className="p-5 flex flex-col items-center">
-      <h1 className="font-bold text-xl">My Events</h1>
-
+      <h1 className="font-bold text-xl border-b p-2">My Events</h1>
       <div className="flex gap-5 pt-10 flex-wrap">
         {events.length === 0 ? (
-          <p>No events found</p>
+          <p>You haven't created any event..</p>
         ) : (
           events.map((event, i) => (
             <EventCard
@@ -66,28 +65,32 @@ export default function MyEvent() {
         )}
       </div>
       {/* -------- previous and current pages ---------- */}
-      <div className="flex justify-center items-center gap-3 mt-10">
-        <button
-          className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
+      {!events
+        ? ""
+        : events.length > 0 && (
+            <div className="flex justify-center items-center gap-3 mt-10">
+              <button
+                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
           hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600
           "
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        <span className="text-gray-500">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <span className="text-gray-500">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
           hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
     </div>
   );
 }

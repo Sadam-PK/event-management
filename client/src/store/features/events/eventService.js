@@ -6,7 +6,7 @@ const fetchEvents = async (
   query = "",
   sortBy = "createdAt",
   sortOrder = "asc",
-  limit = 3
+  limit = 6
 ) => {
   try {
     const token = localStorage.getItem("token");

@@ -16,39 +16,6 @@ const fs = require("fs");
     "../../common/zodSchema.js"
   );
 
-  // const moment = require("moment");
-
-  // ZOD - Login Schema
-
-  // ZOD login Schema
-  // export const loginSchema = zod.object({
-  //   username: zod.string().email(),
-  //   password: zod.string(),
-  // });
-
-  // ZOD - Signup Schema
-  // const signUpSchema = zod.object({
-  //   role: zod.enum(["organizer", "attendee"]),
-  //   username: zod.string().email(),
-  //   password: zod.string(),
-  // });
-
-  // ZOD - Event Schema
-  // const eventSchema = zod.object({
-  //   title: zod.string().min(1, "Title is required"),
-  //   description: zod.string().min(1, "Description is required"),
-  //   location: zod.string().min(1, "Location is required"),
-  //   date: zod
-  //     .string()
-  //     .refine((date) => !isNaN(Date.parse(date)), "Invalid date format"),
-  //   time: zod.string().optional(),
-  //   maxAttendees: zod
-  //     .number()
-  //     .int()
-  //     .positive("Max attendees must be a positive integer"),
-  // });
-
-  //
   const imgConfig = multer.diskStorage({
     destination: (req, file, callback) => {
       callback(null, "./uploads");
@@ -243,7 +210,7 @@ const fs = require("fs");
 
       // Pagination parameters from query string
       const page = parseInt(req.query.page) || 1; // Default to page 1
-      const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
+      const limit = parseInt(req.query.limit) || 6; // Default to 6 events per page
 
       // Calculate the number of documents to skip
       const skip = (page - 1) * limit;
@@ -272,7 +239,7 @@ const fs = require("fs");
   router.get("/events", authenticateJwt, async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 3;
+      const limit = parseInt(req.query.limit) || 6;
       const skip = (page - 1) * limit;
       const keyword = req.query.q || ""; // Optional search keyword
       const sortBy = req.query.sortBy || "createdAt"; // Default sorting field
@@ -301,65 +268,8 @@ const fs = require("fs");
     }
   });
 
-  // // Find all created events
-  // router.get("/events", authenticateJwt, async (req, res) => {
-  //   try {
-  //     // Pagination parameters from query string
-  //     const page = parseInt(req.query.page) || 1; // Default to page 1
-  //     const limit = parseInt(req.query.limit) || 3; // Default to 3 events per page
-
-  //     // Calculate the number of documents to skip
-  //     const skip = (page - 1) * limit;
-
-  //     const events = await Event.find({})
-  //       .populate("createdBy", "username")
-  //       .populate("attendees", "username")
-  //       .skip(skip)
-  //       .limit(limit);
-
-  //     // Get total count of events (to calculate total pages)
-  //     const totalEvents = await Event.countDocuments({});
-
-  //     res.status(200).json({
-  //       events,
-  //       currentPage: page,
-  //       totalPages: Math.ceil(totalEvents / limit),
-  //     });
-  //   } catch (error) {
-  //     res.status(500).json({ error: "Error fetching events" });
-  //   }
-  // });
-
-  // // Search events
-  // router.get("/search_events", async (req, res) => {
-  //   try {
-  //     const keyword = req.query.q || "";
-  //     const page = parseInt(req.query.page, 10) || 1;
-  //     const limit = parseInt(req.query.limit, 10) || 3;
-  //     const skip = (page - 1) * limit;
-
-  //     const totalEvents = await Event.countDocuments({
-  //       title: { $regex: keyword, $options: "i" },
-  //     });
-
-  //     const events = await Event.find({
-  //       title: { $regex: keyword, $options: "i" },
-  //     })
-  //       .skip(skip)
-  //       .limit(limit);
-
-  //     res.json({
-  //       events,
-  //       totalEvents,
-  //       totalPages: Math.ceil(totalEvents / limit),
-  //       currentPage: page,
-  //     });
-  //   } catch (error) {
-  //     res.status(500).json({ message: "Server error" });
-  //   }
-  // });
-
   // Find an events
+
   router.get("/events/:id", authenticateJwt, async (req, res) => {
     const { id } = req.params;
 
@@ -418,9 +328,6 @@ const fs = require("fs");
           // Upload the new photo to Cloudinary
           const upload = await cloudinary.uploader.upload(req.file.path);
 
-          // Optionally, you could delete the old image from Cloudinary
-          // if you store the public_id and want to manage storage properly
-
           // Update the imgPath with the new Cloudinary URL
           event.imgPath = upload.secure_url;
         }
@@ -470,7 +377,7 @@ const fs = require("fs");
     async (req, res) => {
       try {
         const { eventId } = req.params;
-        const userId = req.user._id; // Assuming you pass the user's ID in the request body
+        const userId = req.user._id; 
 
         // Find the event by ID
         const event = await Event.findById(eventId);

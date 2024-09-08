@@ -92,7 +92,7 @@ export default function Login() {
           </a>
         </p>
       </div>
-      {auth.status === "loading" && <p>Loading...</p>}
+      {/* {auth.status === "loading" && <p>Loading...</p>} */}
     </div>
   );
 }
