@@ -44,7 +44,17 @@ To get a local copy up and running follow these simple steps.
     npm install zod
     ```
 
-6.  Run from project directory
+6.  setup .env in client root
+    process.env.REACT_APP_CLOUDINARY_CLOUD_NAME=derhxkzhd
+
+7.  setup .env in server root
+    SECRET=SECr3t
+
+8.  Run frontend from client directory
     ```sh
     npm run dev
+    ```
+9.  Run backend from server directory
+    ```sh
+    nodemon index.js
     ```
