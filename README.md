@@ -5,6 +5,7 @@ This is full stack event management web application.
 ## Prerequisites
 
 - Node.js and npm (or yarn) installed on your machine.
+- Link your mongodb locally via docker
 
 ## Getting Started
 
