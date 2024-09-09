@@ -26,6 +26,7 @@ export default function EventsList() {
         limit: 6,
       })
     );
+    setQuery("");
   };
 
   const handleSortChange = (e) => {
@@ -110,7 +111,7 @@ export default function EventsList() {
                 onClick={() => handleClick(e._id)}
               />
             ))
-          : "There is no event available at the moment.."}
+          : "Not available.."}
       </div>
 
       {/* Pagination controls */}

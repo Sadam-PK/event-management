@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, user } from "../store/features/user/userSlice";
-import { Audio } from "react-loader-spinner";
-
 
 export default function AppBar() {
   const navigate = useNavigate();
@@ -13,24 +11,21 @@ export default function AppBar() {
   useEffect(() => {
     if (status === "idle") {
       dispatch(user());
-    }
-    if (!currentUser && status === "success") {
+    } else if (!currentUser && status === "success") {
       navigate("/login");
     }
   }, [currentUser, status, navigate, dispatch]);
 
-  // if (status === "loading") {
-  //   return (
-  //     <Audio height="100" width="100" color="emerald" ariaLabel="Loading"></Audio>
-  //   );
-  // }
-
   if (!currentUser) {
     return (
       <div className="bg-emerald-300 p-3 flex justify-between">
-        <h2 className="font-bold">
-          <Link to="/">Event Management</Link>
-        </h2>
+        {/* <a href="/" className="font-bold">
+          Event Management
+        </a> */}
+        <Link to={"/"} className="font-bold">
+          Event Management
+        </Link>
+
         <ul className="flex flex-row gap-5">
           <li>
             <Link to="/login">Login</Link>
@@ -45,9 +40,12 @@ export default function AppBar() {
 
   return (
     <div className="bg-emerald-300 p-3 flex justify-between">
-      <h2 className="font-bold">
-        <Link to="/">Event Management</Link>
-      </h2>
+      {/* <a href="/" className="font-bold">
+        Event Management
+      </a> */}
+      <Link to={"/"} className="font-bold">
+        Event Management
+      </Link>
       <ul className="flex flex-row gap-5">
         <li>{currentUser?.username}</li>
         <li

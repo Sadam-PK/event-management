@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/features/auth/authSlice";
 import { user } from "../store/features/user/userSlice";
 import { Audio } from "react-loader-spinner";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -71,7 +72,8 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col w-auto h-screen p-3 gap-3 justify-center items-center mx-auto m-10">
+    <div className="flex flex-col w-auto h-screen p-3 gap-3 
+    justify-center items-center mx-auto m-10">
       <h2 className="font-bold text-xl">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
@@ -89,7 +91,9 @@ export default function Login() {
         />
       </div>
       <button
-        className="bg-emerald-400 p-2 border rounded-md w-32"
+        className="bg-emerald-400 p-2 border rounded-md w-32
+        hover:bg-transparent hover:border-emerald-400 hover:border-2
+        hover:text-emerald-600"
         onClick={handleSubmit}
       >
         Login
@@ -97,9 +101,9 @@ export default function Login() {
       <div className="p-5">
         <p className="text-gray-500">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-700">
+          <Link to="/signup" className="text-blue-700">
             Register here
-          </a>
+          </Link>
         </p>
       </div>
     </div>

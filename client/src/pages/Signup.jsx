@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { signUpSchema } from "../../../common/zodSchema";
+import { Link } from "react-router-dom";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -24,13 +25,13 @@ export default function Signup() {
       password,
       role,
     });
-  
+
     if (!validateResponse.success) {
       // Log validation errors
       toast.error("Validation failed: " + validateResponse.error.message);
       return;
     }
-  
+
     try {
       const response = await fetch("http://localhost:3000/user/signup", {
         method: "POST",
@@ -44,11 +45,11 @@ export default function Signup() {
           "Content-type": "application/json",
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Signup failed: " + response.statusText);
       }
-  
+
       const data = await response.json();
       if (data.token) {
         localStorage.setItem("token", data.token);
@@ -61,7 +62,6 @@ export default function Signup() {
       toast.error("An error occurred: " + error.message);
     }
   };
-  
 
   return (
     <div
@@ -96,9 +96,9 @@ export default function Signup() {
       <div className="p-5">
         <p className="text-gray-500">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-700">
+          <Link to="/login" className="text-blue-700">
             Login here
-          </a>
+          </Link>
         </p>
       </div>
     </div>

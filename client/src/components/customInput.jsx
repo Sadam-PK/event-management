@@ -5,7 +5,7 @@ export default function CustomInput(props) {
       placeholder={props.placeholder}
       value={props.value}
       onChange={props.onChange}
-      className="border p-3"
+      className="border p-3 outline-none"
     />
   );
 }
