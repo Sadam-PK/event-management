@@ -42,21 +42,33 @@ const fs = require("fs");
 
   // Sign up user
   router.post("/signup", async (req, res) => {
-    const { username, password, role } = req.body;
-    const response = signUpSchema.safeParse({ username, password, role });
+    try {
+      const { username, password, role } = req.body;
+      const response = signUpSchema.safeParse({ username, password, role });
 
-    if (response.success) {
-      const user = await User.findOne({ username: response.username });
-      if (user) {
-        res.status(403).json({ message: "User already exists" });
-      } else {
-        const newUser = new User({ username, password, role });
-        await newUser.save();
-        const token = jwt.sign({ username, role }, SECRET, { expiresIn: "1h" });
-        res.json({ message: "User created successfully", token });
+      if (response.success) {
+        const user = await User.findOne({ username: response.username });
+        if (user) {
+          res.status(403).json({ message: "User already exists" });
+        } else {
+          const newUser = new User({ username, password, role });
+          await newUser.save();
+          const token = jwt.sign({ username, role }, SECRET, {
+            expiresIn: "1h",
+          });
+          res.json({ message: "User created successfully", token });
+        }
       }
-    } else {
-      console.log(response.error);
+    } catch (error) {
+      if (error.code === 11000) {
+        // MongoDB duplicate key error code
+        res.status(400).json({ message: "Username already exists." });
+      } else {
+        console.error("Error during user creation:", error); // Log the error for debugging
+        res
+          .status(500)
+          .json({ message: "An error occurred while creating the user." });
+      }
     }
   });
 
