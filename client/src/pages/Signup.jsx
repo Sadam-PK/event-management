@@ -5,12 +5,16 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { signUpSchema } from "../../../common/zodSchema";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userRegister } from "../store/features/register/registerSlice";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.register); //name of the slice
 
   const navigate = useNavigate();
 
@@ -19,7 +23,8 @@ export default function Signup() {
   const handlePasswordChange = (event) => setPassword(event.target.value);
   const handleRadioChange = (event) => setRole(event.target.value);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const validateResponse = signUpSchema.safeParse({
       username,
       password,
@@ -31,35 +36,11 @@ export default function Signup() {
       toast.error("Validation failed: " + validateResponse.error.message);
       return;
     }
-
     try {
-      const response = await fetch("http://localhost:3000/user/signup", {
-        method: "POST",
-        body: JSON.stringify({
-          name: name,
-          username: validateResponse.data.username,
-          password: validateResponse.data.password,
-          role: validateResponse.data.role,
-        }),
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Signup failed: " + response.statusText);
-      }
-
-      const data = await response.json();
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        navigate("/");
-      } else {
-        toast.error("Signup failed: No token received");
-      }
+      dispatch(userRegister({ username, password, role })).unwrap();
+      navigate("/");
     } catch (error) {
-      console.error("Error during signup:", error);
-      toast.error("An error occurred: " + error.message);
+      toast.error("Signup failed: " + error.message);
     }
   };
 
@@ -69,7 +50,7 @@ export default function Signup() {
       justify-center items-center mx-auto m-10"
     >
       <h2 className="font-bold text-xl">Sign Up Here!</h2>
-      <CustomRadio onChange={handleRadioChange} />
+      <CustomRadio onChange={handleRadioChange} value={role} />
       <CustomInput
         placeholder="Name"
         value={name}

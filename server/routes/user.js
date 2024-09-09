@@ -331,6 +331,12 @@ const fs = require("fs");
           // Update the imgPath with the new Cloudinary URL
           event.imgPath = upload.secure_url;
         }
+        // Remove the file from the local uploads folder
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error("Error deleting file:", err);
+          }
+        });
 
         // Save the updated event
         await event.save();
