@@ -1,7 +1,7 @@
 import CustomInput from "../components/customInput";
 import CustomRadio from "../components/customRadio";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { signUpSchema } from "../../../common/zodSchema";
 import { Link } from "react-router-dom";
@@ -14,9 +14,15 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.register); //name of the slice
+  const { loading, error } = useSelector((state) => state.register);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Signup failed: " + error.message);
+    }
+  }, [error]);
 
   const handleNameChange = (event) => setName(event.target.value);
   const handleUsernameChange = (event) => setUsername(event.target.value);
@@ -32,12 +38,12 @@ export default function Signup() {
     });
 
     if (!validateResponse.success) {
-      // Log validation errors
       toast.error("Validation failed: " + validateResponse.error.message);
       return;
     }
+
     try {
-      dispatch(userRegister({ username, password, role })).unwrap();
+      await dispatch(userRegister({ username, password, role })).unwrap();
       navigate("/");
     } catch (error) {
       toast.error("Signup failed: " + error.message);
