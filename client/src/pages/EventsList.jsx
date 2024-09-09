@@ -94,8 +94,8 @@ export default function EventsList() {
             onChange={handleSortChange}
             className="border outline-none p-2"
           >
-            <option value="createdAt:asc">Oldest</option>
-            <option value="createdAt:desc">Latest</option>
+            {/* <option value="createdAt:asc">Oldest</option>
+            <option value="createdAt:desc">Latest</option> */}
             <option value="title:asc">Ascending</option>
             <option value="title:desc">Descending</option>
           </select>
