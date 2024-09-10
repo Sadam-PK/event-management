@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { loginSchema } from "../../../common/zodSchema.js";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/features/auth/authSlice";
-import { user } from "../store/features/user/userSlice";
+import { userMe } from "../store/features/user/userSlice";
 import { Audio } from "react-loader-spinner";
 import { Link } from "react-router-dom";
 
@@ -32,7 +32,7 @@ export default function Login() {
       const response = await dispatch(login(validationResult.data)).unwrap();
       if (response.token) {
         localStorage.setItem("token", response.token);
-        dispatch(user());
+        dispatch(userMe());
         navigate("/");
       } else {
         console.log("Token is null");

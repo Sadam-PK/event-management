@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "./userService";
 
-export const user = createAsyncThunk(
-  "login/userLogin",
+export const userMe = createAsyncThunk(
+  "user/userMe",
   async (_, { rejectWithValue }) => {
     try {
       const response = await userService.getUser();
@@ -32,17 +32,17 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(user.pending, (state) => {
+      .addCase(userMe.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(user.fulfilled, (state, action) => {
+      .addCase(userMe.fulfilled, (state, action) => {
         state.status = "success";
         state.user = action.payload;
         if (action.payload.token) {
           localStorage.setItem("token", action.payload.token);
         }
       })
-      .addCase(user.rejected, (state, action) => {
+      .addCase(userMe.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

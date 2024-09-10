@@ -1,4 +1,3 @@
-// userService.js
 import axios from "axios";
 
 const fetchEvents = async (
@@ -13,22 +12,24 @@ const fetchEvents = async (
     if (!token) {
       throw new Error("No token found in localStorage");
     }
+    
     const response = await axios.get("http://localhost:3000/user/events", {
       params: {
-        q: query,
-        page: page,
-        limit: limit,
-        sortBy: sortBy,
-        sortOrder: sortOrder,
+        q: query,           
+        page: page,         
+        limit: limit,       
+        sortBy: sortBy,     
+        sortOrder: sortOrder, 
       },
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, 
       },
     });
-    return response.data;
+    
+    return response.data; 
   } catch (error) {
-    // console.error("Error fetching events data:", error);
-    throw error;
+    console.error("Error fetching events data:", error); 
+    throw error; 
   }
 };
 

@@ -1,31 +1,35 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout, user } from "../store/features/user/userSlice";
+import { logout, userMe } from "../store/features/user/userSlice";
 
 export default function AppBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user: currentUser, status } = useSelector((state) => state.user);
+  const { user, status } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(user());
-    } else if (!currentUser && status === "success") {
+      dispatch(userMe());
+    } else if (status === "success" && !user) {
       navigate("/login");
     }
-  }, [currentUser, status, navigate, dispatch]);
+  }, [user, status, navigate, dispatch]);
 
-  if (!currentUser) {
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  if (!user) {
     return (
       <div className="bg-emerald-300 p-3 flex justify-between">
+        <Link to="/" className="font-bold">
+          Event Management
+        </Link>
         {/* <a href="/" className="font-bold">
           Event Management
         </a> */}
-        <Link to={"/"} className="font-bold">
-          Event Management
-        </Link>
-
         <ul className="flex flex-row gap-5">
           <li>
             <Link to="/login">Login</Link>
@@ -40,21 +44,15 @@ export default function AppBar() {
 
   return (
     <div className="bg-emerald-300 p-3 flex justify-between">
+      <Link to="/" className="font-bold">
+        Event Management
+      </Link>
       {/* <a href="/" className="font-bold">
         Event Management
       </a> */}
-      <Link to={"/"} className="font-bold">
-        Event Management
-      </Link>
       <ul className="flex flex-row gap-5">
-        <li>{currentUser?.username}</li>
-        <li
-          className="cursor-pointer"
-          onClick={() => {
-            dispatch(logout());
-            navigate("/login");
-          }}
-        >
+        <li>{user?.username}</li>
+        <li className="cursor-pointer" onClick={handleLogout}>
           Logout
         </li>
       </ul>

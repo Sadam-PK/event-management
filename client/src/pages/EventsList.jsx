@@ -5,7 +5,7 @@ import {
   setCurrentPage,
 } from "../store/features/events/eventSlice";
 import EventCard from "../components/EventCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function EventsList() {
   const dispatch = useDispatch();
@@ -14,45 +14,63 @@ export default function EventsList() {
   const totalPages = useSelector((state) => state.event.totalPages);
   const isLoading = useSelector((state) => state.event.isLoading);
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
+  const location = useLocation();
+  const [query, setQuery] = useState(""); // Initial empty query state
+  const [searchQuery, setSearchQuery] = useState(new URLSearchParams(location.search).get('query') || "");
+
+  useEffect(() => {
+    const queryParam = new URLSearchParams(location.search).get('query');
+    if (queryParam) {
+      setSearchQuery(queryParam);
+      dispatch(
+        fetchEventsThunk({
+          page: currentPage,
+          query: queryParam,
+          sortBy: "createdAt",
+          sortOrder: "asc",
+          limit: 6,
+        })
+      );
+    } else {
+      setSearchQuery(""); // Reset searchQuery if no query param
+      dispatch(
+        fetchEventsThunk({
+          page: currentPage,
+          query: "",
+          sortBy: "createdAt",
+          sortOrder: "asc",
+          limit: 6,
+        })
+      );
+    }
+  }, [location.search, dispatch, currentPage]);
 
   const handleSearch = () => {
+    navigate(`/?query=${query}`, { replace: true });
+    setSearchQuery(query); // Update searchQuery state to trigger effect
     dispatch(
       fetchEventsThunk({
-        page: 1,
+        page: 1, // Reset to page 1 on new search
         query,
         sortBy: "createdAt",
         sortOrder: "asc",
         limit: 6,
       })
     );
-    setQuery("");
   };
 
   const handleSortChange = (e) => {
     const [field, order] = e.target.value.split(":");
     dispatch(
       fetchEventsThunk({
-        page: 1,
-        query,
+        page: 1, // Reset to page 1 on sort change
+        query: searchQuery,
         sortBy: field,
         sortOrder: order,
         limit: 6,
       })
     );
   };
-
-  useEffect(() => {
-    dispatch(
-      fetchEventsThunk({
-        page: currentPage,
-        query: "",
-        sortBy: "createdAt",
-        sortOrder: "asc",
-        limit: 6,
-      })
-    );
-  }, [dispatch, currentPage]);
 
   const handleClick = (id) => {
     navigate(`/event/${id}`);
@@ -83,8 +101,7 @@ export default function EventsList() {
           />
           <button
             onClick={handleSearch}
-            className="border outline-none p-2 rounded-r-xl
-            bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+            className="border outline-none p-2 rounded-r-xl bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
           >
             Search
           </button>
@@ -94,8 +111,6 @@ export default function EventsList() {
             onChange={handleSortChange}
             className="border outline-none p-2"
           >
-            {/* <option value="createdAt:asc">Oldest</option>
-            <option value="createdAt:desc">Latest</option> */}
             <option value="title:asc">Ascending</option>
             <option value="title:desc">Descending</option>
           </select>
@@ -118,8 +133,7 @@ export default function EventsList() {
       {events.length > 0 && (
         <div className="flex justify-center items-center gap-5 mt-10">
           <button
-            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
-          hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
             onClick={handlePrevPage}
             disabled={currentPage === 1}
           >
@@ -129,8 +143,7 @@ export default function EventsList() {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
-          hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >
