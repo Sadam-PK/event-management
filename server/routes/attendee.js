@@ -1,15 +1,8 @@
 const express = require("express");
 const { authenticateJwt } = require("../middleware/auth");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const SECRET = process.env.SECRET;
 const { User, Event } = require("../db/index");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("../helper/cloudinaryConfig");
-const zod = require("zod");
-const fs = require("fs");
 
 router.get("/events", authenticateJwt, async (req, res) => {
   try {

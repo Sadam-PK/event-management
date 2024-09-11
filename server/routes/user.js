@@ -3,13 +3,8 @@ const { authenticateJwt } = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRET = process.env.SECRET;
-const { User, Event } = require("../db/index");
+const { User } = require("../db/index");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("../helper/cloudinaryConfig");
-const zod = require("zod");
-const fs = require("fs");
 
 (async () => {
   const { loginSchema, signUpSchema, eventSchema } = await import(
@@ -17,7 +12,7 @@ const fs = require("fs");
   );
 
 
-  // Sign up user
+  // Sign up user -- common route for attendees and organizers
   router.post("/signup", async (req, res) => {
     try {
       const { username, password, role } = req.body;
@@ -49,7 +44,7 @@ const fs = require("fs");
     }
   });
 
-  // Login user
+  // Login user -- common route for attendees and organizers
   router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const response = loginSchema.safeParse({ username, password });

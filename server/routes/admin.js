@@ -1,18 +1,14 @@
 const express = require("express");
-const { authenticateJwt } = require("../middleware/auth");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const SECRET = process.env.SECRET;
 const { User, Event } = require("../db/index");
-const multer = require("multer");
-const path = require("path");
-const cloudinary = require("../helper/cloudinaryConfig");
 const router = express.Router();
 
 router.get("/", (req, res) => {
   res.send("hello");
 });
 
+
+// fethcing events by admin
 router.get("/events", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -43,7 +39,7 @@ router.get("/events", async (req, res) => {
   }
 });
 
-// get all users
+// get all users -- by admin
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find({}).populate();
