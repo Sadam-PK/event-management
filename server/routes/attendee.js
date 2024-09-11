@@ -4,6 +4,7 @@ require("dotenv").config();
 const { User, Event } = require("../db/index");
 const router = express.Router();
 
+// fetch organizers created events 
 router.get("/events", authenticateJwt, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -34,8 +35,7 @@ router.get("/events", authenticateJwt, async (req, res) => {
   }
 });
 
-// Find an events
-
+// Find a single event
 router.get("/events/:id", authenticateJwt, async (req, res) => {
   const { id } = req.params;
 
@@ -58,7 +58,7 @@ router.get("/events/:id", authenticateJwt, async (req, res) => {
 });
 
 
-// Join ---- Add attendees to event
+// Join an event
 router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
   try {
     const { eventId } = req.params;
