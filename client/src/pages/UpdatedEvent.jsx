@@ -16,12 +16,12 @@ export default function UpdateEvent() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Fetch the existing event details (optional, if you want to pre-fill the form)
+  // Fetch the existing event details --- to fill update input fields
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/user/events/${id}`,
+          `http://localhost:3000/organizer/events/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -80,7 +80,7 @@ export default function UpdateEvent() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/user/update_event/${id}`,
+        `http://localhost:3000/organizer/update_event/${id}`,
         formData,
         config
       );

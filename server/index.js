@@ -5,12 +5,16 @@ const app = express();
 
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");
+const organizerRouter = require("./routes/organizer");
+const attendeeRouter = require("./routes/attendee");
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/admin", adminRouter);
 app.use("/user", userRouter);
+app.use("/organizer", organizerRouter);
+app.use("/attendee", attendeeRouter);
 
 // db connection
 mongoose.connect("mongodb://localhost:27017", {
@@ -18,5 +22,3 @@ mongoose.connect("mongodb://localhost:27017", {
 });
 
 app.listen(3000, () => console.log("Server running on port 3000"));
-
-

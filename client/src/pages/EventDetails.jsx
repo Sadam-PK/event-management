@@ -18,7 +18,7 @@ export default function EventDetails() {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/user/events/${id}`,
+          `http://localhost:3000/organizer/events/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -52,7 +52,7 @@ export default function EventDetails() {
   const handleJoinClick = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/user/events/${id}/attendees/`,
+        `http://localhost:3000/attendee/events/${id}/attendees/`,
         {
           method: "POST",
           headers: {
@@ -89,7 +89,7 @@ export default function EventDetails() {
     // alert("Delete");
     try {
       const response = await fetch(
-        `http://localhost:3000/user/delete_event/${id}`,
+        `http://localhost:3000/organizer/delete_event/${id}`,
         {
           method: "DELETE",
           headers: {

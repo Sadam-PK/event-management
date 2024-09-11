@@ -74,7 +74,7 @@ export default function CreateEvent() {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/user/create_event",
+        "http://localhost:3000/organizer/create_event",
         formDataToSend,
         config
       );

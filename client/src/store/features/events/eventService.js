@@ -13,7 +13,7 @@ const fetchEvents = async (
       throw new Error("No token found in localStorage");
     }
     
-    const response = await axios.get("http://localhost:3000/user/events", {
+    const response = await axios.get("http://localhost:3000/attendee/events", {
       params: {
         q: query,           
         page: page,         

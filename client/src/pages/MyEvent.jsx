@@ -17,7 +17,7 @@ export default function MyEvent() {
   const fetchEvents = async (page) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/user/my_events?page=${page}&limit=${limit}`,
+        `http://localhost:3000/organizer/my_events?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
