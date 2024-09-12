@@ -1,11 +1,11 @@
-export default function CustomButton({ name, onClick }) {
+export default function CustomButton({ name, onClick, icon }) {
   return (
     <button
-      className={`w-20 h-8 rounded bg-emerald-400 hover:border-emerald-400 
-        hover:border-2 hover:text-emerald-700 hover:bg-white`}
+      className={`w-20 h-8 border rounded-full`}
       onClick={onClick}
     >
       {name}
+      {icon}
     </button>
   );
 }

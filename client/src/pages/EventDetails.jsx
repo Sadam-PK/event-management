@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import CustomButton from "../components/customButton";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { faCoffee, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -86,7 +88,7 @@ export default function EventDetails() {
 
   // ------ delete event -------
   const handleDeleteClick = async () => {
-    // alert("Delete");
+    // window.confirm("Do you want to delete?");
     try {
       const response = await fetch(
         `http://localhost:3000/organizer/delete_event/${id}`,
@@ -147,8 +149,18 @@ export default function EventDetails() {
         )}
         {isOrganizer && (
           <div className="space-x-2">
-            <CustomButton name="Edit" onClick={handleEditClick} />
-            <CustomButton name="Delete" onClick={handleDeleteClick} />
+            <CustomButton
+              // name="Edit"
+              onClick={handleEditClick}
+              icon={<FontAwesomeIcon icon={faEdit} />}
+            />
+            <CustomButton
+              // name="Delete"
+              onClick={handleDeleteClick}
+              icon={
+                <FontAwesomeIcon icon={faTrash} style={{ color: "black" }} />
+              }
+            />
           </div>
         )}
       </div>
