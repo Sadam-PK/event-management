@@ -6,8 +6,15 @@ import {
 } from "../store/features/events/eventSlice";
 import EventCard from "../components/EventCard";
 import { useNavigate, useLocation } from "react-router-dom";
-
 import Loading from "../components/Loading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CustomButton from "../components/customButton";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faBackspace,
+  faForward,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function EventsList() {
   const dispatch = useDispatch();
@@ -99,6 +106,7 @@ export default function EventsList() {
 
   return (
     <div>
+      <div className="bg-emerald-200 px-3">Attendee Panel</div>
       {loading ? (
         <Loading />
       ) : (
@@ -114,7 +122,8 @@ export default function EventsList() {
               />
               <button
                 onClick={handleSearch}
-                className="border outline-none p-2 rounded-r-xl bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+                className="border outline-none p-2 rounded-r-xl
+                 bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
               >
                 Search
               </button>
@@ -130,7 +139,7 @@ export default function EventsList() {
             </div>
           </div>
           <h2 className="font-bold text-xl">Events List</h2>
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-5 justify-center">
             {events.length !== 0
               ? events.map((e) => (
                   <EventCard
@@ -144,24 +153,23 @@ export default function EventsList() {
 
           {/* Pagination controls */}
           {events.length > 0 && (
-            <div className="flex justify-center items-center gap-5 mt-10">
-              <button
-                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+            <div
+              className="flex justify-center items-center gap-5 
+            mt-10 py-20"
+            >
+              <CustomButton
+                icon={<FontAwesomeIcon icon={faArrowLeft} />}
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-              >
-                Prev
-              </button>
+              />
               <span className="text-gray-500">
                 Page {currentPage} of {totalPages}
               </span>
-              <button
-                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+              <CustomButton
+                icon={<FontAwesomeIcon icon={faArrowRight}/>}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
+              />
             </div>
           )}
         </div>

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import EventCard from "../components/EventCard";
 import { useNavigate } from "react-router-dom";
+import CustomButton from "../components/customButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function MyEvent() {
   const [events, setEvents] = useState([]);
@@ -33,7 +36,7 @@ export default function MyEvent() {
   };
 
   useEffect(() => {
-    fetchEvents(currentPage); // Fetch events for the current page
+    fetchEvents(currentPage);
   }, [currentPage]);
 
   const handlePrevPage = () => {
@@ -69,26 +72,24 @@ export default function MyEvent() {
         ? ""
         : events.length > 0 && (
             <div className="flex justify-center items-center gap-3 mt-10">
-              <button
-                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
-          hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600
-          "
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-              >
-                Prev
-              </button>
+              <CustomButton
+                icon={
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                  />
+                }
+              />
               <span className="text-gray-500">
                 Page {currentPage} of {totalPages}
               </span>
-              <button
-                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer
-          hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+
+              <CustomButton
+                icon={<FontAwesomeIcon icon={faArrowRight} />}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
+              />
             </div>
           )}
     </div>

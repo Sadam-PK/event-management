@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import CustomButton from "../components/customButton";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { faCoffee, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function EventDetails() {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css"; // Import the default styles
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Loading = () => {
   return (
