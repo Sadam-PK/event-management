@@ -63,13 +63,13 @@ export default function Login() {
     };
   }, [dispatch]);
 
-  if (status === "loading") {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Audio height="80" width="80" color="green" ariaLabel="loading" />
-      </div>
-    );
-  }
+  // if (status === "loading") {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <Audio height="80" width="80" color="green" ariaLabel="loading" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col w-auto h-screen p-3 gap-3 

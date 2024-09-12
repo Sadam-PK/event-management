@@ -7,6 +7,8 @@ import {
 import EventCard from "../components/EventCard";
 import { useNavigate, useLocation } from "react-router-dom";
 
+import Loading from "../components/Loading";
+
 export default function EventsList() {
   const dispatch = useDispatch();
   const events = useSelector((state) => state.event.events);
@@ -16,10 +18,17 @@ export default function EventsList() {
   const navigate = useNavigate();
   const location = useLocation();
   const [query, setQuery] = useState(""); // Initial empty query state
-  const [searchQuery, setSearchQuery] = useState(new URLSearchParams(location.search).get('query') || "");
+  const [searchQuery, setSearchQuery] = useState(
+    new URLSearchParams(location.search).get("query") || ""
+  );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const queryParam = new URLSearchParams(location.search).get('query');
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    const queryParam = new URLSearchParams(location.search).get("query");
     if (queryParam) {
       setSearchQuery(queryParam);
       dispatch(
@@ -89,66 +98,72 @@ export default function EventsList() {
   };
 
   return (
-    <div className="p-10 space-y-5">
-      <div className="justify-center flex">
-        <div>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search events"
-            className="border outline-none p-2"
-          />
-          <button
-            onClick={handleSearch}
-            className="border outline-none p-2 rounded-r-xl bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
-          >
-            Search
-          </button>
-        </div>
-        <div className="ml-4 rounded-sm">
-          <select
-            onChange={handleSortChange}
-            className="border outline-none p-2"
-          >
-            <option value="title:asc">Ascending</option>
-            <option value="title:desc">Descending</option>
-          </select>
-        </div>
-      </div>
-      <h2 className="font-bold text-xl">Events List</h2>
-      <div className="flex flex-wrap gap-3 justify-center">
-        {events.length !== 0
-          ? events.map((e) => (
-              <EventCard
-                key={e._id}
-                event={e}
-                onClick={() => handleClick(e._id)}
+    <div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="p-10 space-y-5">
+          <div className="justify-center flex">
+            <div>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search events"
+                className="border outline-none p-2"
               />
-            ))
-          : "Not available.."}
-      </div>
+              <button
+                onClick={handleSearch}
+                className="border outline-none p-2 rounded-r-xl bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+              >
+                Search
+              </button>
+            </div>
+            <div className="ml-4 rounded-sm">
+              <select
+                onChange={handleSortChange}
+                className="border outline-none p-2"
+              >
+                <option value="title:asc">Ascending</option>
+                <option value="title:desc">Descending</option>
+              </select>
+            </div>
+          </div>
+          <h2 className="font-bold text-xl">Events List</h2>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {events.length !== 0
+              ? events.map((e) => (
+                  <EventCard
+                    key={e._id}
+                    event={e}
+                    onClick={() => handleClick(e._id)}
+                  />
+                ))
+              : "Not available.."}
+          </div>
 
-      {/* Pagination controls */}
-      {events.length > 0 && (
-        <div className="flex justify-center items-center gap-5 mt-10">
-          <button
-            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-          <span className="text-gray-500">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+          {/* Pagination controls */}
+          {events.length > 0 && (
+            <div className="flex justify-center items-center gap-5 mt-10">
+              <button
+                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <span className="text-gray-500">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                className="btn btn-primary bg-emerald-400 w-16 h-9 rounded-md cursor-pointer hover:bg-white hover:border-2 hover:border-emerald-500 hover:text-emerald-600"
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

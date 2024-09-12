@@ -24,7 +24,7 @@ To get a local copy up and running follow these simple steps.
     npm install
     ```
     ```sh
-    npm install react-router-dom axios react-redux redux-thunk @reduxjs/toolkit react-query @heroicons/react react-toastify react-paginate react-loader-spinner moment
+    npm install react-router-dom axios react-redux redux-thunk @reduxjs/toolkit react-query @heroicons/react react-toastify react-paginate react-loader-spinner moment react-loading-skeleton
     ```
 3.  Install Tailwind CSS in client
 
