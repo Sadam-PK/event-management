@@ -2,13 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const http = require("http");
-const createWebSocketServer = require("./websocket");
+const createWebSocketServer = require("./utils/websocket");
 
 const app = express();
 const server = http.createServer(app);
 
 // Initialize WebSocket server
-const wss = createWebSocketServer(server);
+createWebSocketServer(server);
 
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");

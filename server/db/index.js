@@ -51,21 +51,22 @@ const eventSchema = new mongoose.Schema({
 
 // message schema
 const messageSchema = new mongoose.Schema({
-  organizer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  attendee: {
+  sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
 });
 
 // chat schema
 const chatSchema = new mongoose.Schema({
+  event: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Event",
+    required: true,
+  },
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
 });
 
