@@ -1,7 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const http = require("http");
+const createWebSocketServer = require("./websocket");
+
 const app = express();
+const server = http.createServer(app);
+
+// Initialize WebSocket server
+const wss = createWebSocketServer(server);
 
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");
@@ -21,4 +28,4 @@ mongoose.connect("mongodb://localhost:27017", {
   dbName: "event-management",
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+server.listen(3000, () => console.log("Server running on port 3000"));
