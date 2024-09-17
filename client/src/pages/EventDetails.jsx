@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Chat from "./Chat";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -131,6 +132,7 @@ export default function EventDetails() {
         <div>Date: {moment(event?.date).format("L")}</div>
         <div>Location: {event?.location}</div>
         <div>Capacity: {event?.maxAttendees}</div>
+
         {isOrganizer && (
           <div>
             Attendees:
@@ -163,7 +165,9 @@ export default function EventDetails() {
             />
           </div>
         )}
+        <Chat eventId={event?._id}/>
       </div>
+
       <div className="flex w-[40vw] border items-center justify-center p2 ">
         <img src={event?.imgPath} alt="" className="overflow-hidden" />
       </div>
