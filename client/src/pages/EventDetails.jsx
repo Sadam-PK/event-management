@@ -5,9 +5,14 @@ import { toast } from "react-toastify";
 import CustomButton from "../components/customButton";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faPeopleArrows,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Chat from "./Chat";
+import ViewAttendees from "../components/ViewAttendees";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -15,6 +20,10 @@ export default function EventDetails() {
   const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
+
+  const handleViewAttendees = () => {
+    navigate("/attendees", { state: { event } });
+  };
 
   // ----- Fetch event and user details -----
   useEffect(() => {
@@ -123,7 +132,7 @@ export default function EventDetails() {
   const isAdmin = user?.role === "admin";
 
   return (
-    <div className=" flex flex-row mx-auto h-auto p-10 gap-2">
+    <div className=" flex flex-row mx-auto h-auto p-10 gap-2 relative">
       <div className="flex flex-col space-y-5 w-[60vw] p-5 border">
         <div className="">Event Title: {event?.title}</div>
         <div className="">Details: {event?.description}</div>
@@ -135,10 +144,12 @@ export default function EventDetails() {
 
         {isOrganizer && (
           <div>
-            Attendees:
-            {event?.attendees.map((e, i) => {
-              return <div key={i}>{e.username}</div>;
-            })}
+            {/* <button
+              onClick={handleViewAttendees}
+              className="hover:text-emerald-400 font-bold"
+            >
+             View Attendees
+            </button> */}
           </div>
         )}
 
@@ -163,9 +174,16 @@ export default function EventDetails() {
                 <FontAwesomeIcon icon={faTrash} style={{ color: "black" }} />
               }
             />
+            <CustomButton
+              onClick={handleViewAttendees}
+              icon={<FontAwesomeIcon icon={faPeopleArrows} />}
+              // name="View"
+            />
           </div>
         )}
-        <Chat eventId={event?._id}/>
+
+        {/* chat component inserted in event details */}
+        <Chat eventId={event?._id} />
       </div>
 
       <div className="flex w-[40vw] border items-center justify-center p2 ">
