@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
+import axios from "axios"; // For fetching old messages
 
 const Chat = ({ eventId }) => {
   const [ws, setWs] = useState(null);
@@ -14,8 +15,28 @@ const Chat = ({ eventId }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log(`token -----> ${token}`);
 
+    // Fetch previous messages from the database using an API
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/user/events/${eventId}/messages`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Fetched Messages: ", response.data); // Debugging
+        setMessages(response.data); // Assuming the API returns an array of messages
+      } catch (error) {
+        console.error("Error fetching previous messages:", error);
+      }
+    };
+
+    fetchMessages(); // Fetch previous messages when the component mounts
+
+    // WebSocket setup
     const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
 
     socket.onopen = () => {
@@ -24,6 +45,7 @@ const Chat = ({ eventId }) => {
 
     socket.onmessage = (event) => {
       const incomingMessage = JSON.parse(event.data);
+      console.log("Incoming WebSocket Message: ", incomingMessage); // Debugging
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     };
 
@@ -40,8 +62,8 @@ const Chat = ({ eventId }) => {
     return () => {
       socket.close();
     };
-  }, []);
-  console.log("eventId ------>>> " + eventId);
+  }, [eventId]);
+
 
   const sendMessage = () => {
     if (ws && message) {
@@ -60,17 +82,23 @@ const Chat = ({ eventId }) => {
     setIsExpanded(!isExpanded);
   };
 
+  console.log('Messages: ', messages); // Debugging
+
   return (
-    <div className="absolute bottom-0 right-0 mr-10">
+    <div className="absolute -bottom-12 right-0 mr-10">
       {/* Button to toggle chat visibility */}
-      <button
-        onClick={toggleChat}
-        className="bg-blue-600 text-white rounded-full p-2"
-      >
+      <button onClick={toggleChat}>
         {isExpanded ? (
-          <FontAwesomeIcon icon={faMinus} />
+          <FontAwesomeIcon
+            icon={faMinus}
+            className="p-1 bg-blue-700 text-white rounded-full"
+          />
         ) : (
-          <FontAwesomeIcon icon={faMessage} />
+          <FontAwesomeIcon
+            icon={faMessage}
+            size="2x"
+            className="p-6 bg-blue-700 rounded-full text-white"
+          />
         )}
       </button>
 
@@ -83,10 +111,10 @@ const Chat = ({ eventId }) => {
           <h2 className="py-2 font-bold border-b">Event Chat</h2>
 
           {/* Display incoming messages */}
-          <div className=" h-[18vh] mb-2">
+          <div className="h-screen mb-2 overflow-y-auto border">
             {messages.map((msg, index) => (
               <p key={index}>
-                <strong>{msg.sender}:</strong> {msg.message}
+                <strong>{msg.sender || "anonymous"}:</strong> {msg.content}
               </p>
             ))}
           </div>

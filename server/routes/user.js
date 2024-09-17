@@ -3,14 +3,13 @@ const { authenticateJwt } = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const SECRET = process.env.SECRET;
-const { User } = require("../db/index");
+const { User, Chat } = require("../db/index");
 const router = express.Router();
 
 (async () => {
   const { loginSchema, signUpSchema, eventSchema } = await import(
     "../../common/zodSchema.js"
   );
-
 
   // Sign up user -- common route for attendees and organizers
   router.post("/signup", async (req, res) => {
@@ -109,7 +108,6 @@ const router = express.Router();
     }
   });
 
-  
   // Update User Profile
   router.put("/profile", authenticateJwt, async (req, res) => {
     const userId = req.user._id;
@@ -152,6 +150,21 @@ const router = express.Router();
       res.status(200).json({ message: "Account deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: "Error deleting account" });
+    }
+  });
+
+  // Fetch messages for a particular event
+  router.get("/events/:eventId/messages", async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const chat = await Chat.findOne({ event: eventId }).populate("messages");
+      if (!chat) {
+        return res.status(404).json({ error: "No chat found for this event" });
+      }
+
+      res.json(chat.messages);
+    } catch (error) {
+      res.status(500).json({ error: "Server error" });
     }
   });
 })();

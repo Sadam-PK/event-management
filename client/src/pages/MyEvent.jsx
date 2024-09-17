@@ -53,7 +53,7 @@ export default function MyEvent() {
 
   return (
     <div className="p-5 flex flex-col items-center">
-      <h1 className="font-bold text-xl border-b p-2">My Events</h1>
+      <h1 className="font-bold text-xl border-b p-2 text-gray-700">My Events</h1>
       <div className="flex gap-5 pt-10 flex-wrap">
         {events.length === 0 ? (
           <p>You haven't created any event..</p>

@@ -21,9 +21,16 @@ function createWebSocketServer(httpServer) {
     // Assuming `wsAuth` attaches user to ws
     const userId = ws.user._id;
 
+    // Set userId to the WebSocket connection for later use
+    ws.userId = userId;
+
+    // Handle incoming messages
     ws.on("message", async (message) => {
       try {
         const { eventId, receiverId, text } = JSON.parse(message);
+
+        // Set the eventId on the ws object for future messages
+        ws.eventId = eventId;
 
         // Check if the user is part of the event
         const event = await Event.findById(eventId)
@@ -62,14 +69,20 @@ function createWebSocketServer(httpServer) {
           { $push: { messages: messageDoc._id } }
         );
 
-        // Broadcast message to all clients connected to the event
+        // Broadcast the message to all clients connected to the same event
         wss.clients.forEach((client) => {
           if (
             client.readyState === WebSocket.OPEN &&
             client.userId &&
             client.eventId === eventId
           ) {
-            client.send(JSON.stringify({ sender: userId, message: text }));
+            // Send the message to the connected clients
+            client.send(
+              JSON.stringify({
+                sender: userId,
+                message: text,
+              })
+            );
           }
         });
       } catch (error) {

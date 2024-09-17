@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 import CustomButton from "../components/customButton";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import {
-  faEdit,
-  faPeopleArrows,
+  faPen,
+  faPeopleGroup,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Chat from "./Chat";
-import ViewAttendees from "../components/ViewAttendees";
 
 export default function EventDetails() {
   const { id } = useParams();
@@ -133,8 +132,8 @@ export default function EventDetails() {
 
   return (
     <div className=" flex flex-row mx-auto h-auto p-10 gap-2 relative">
-      <div className="flex flex-col space-y-5 w-[60vw] p-5 border">
-        <div className="">Event Title: {event?.title}</div>
+      <div className="flex flex-col space-y-5 w-[60vw] p-5 border rounded-xl text-gray-600">
+        <div className="border-b">Event Title: {event?.title}</div>
         <div className="">Details: {event?.description}</div>
         <div>Organizer: {event?.createdBy?.username}</div>
         <div>Time: {event?.time}</div>
@@ -142,16 +141,7 @@ export default function EventDetails() {
         <div>Location: {event?.location}</div>
         <div>Capacity: {event?.maxAttendees}</div>
 
-        {isOrganizer && (
-          <div>
-            {/* <button
-              onClick={handleViewAttendees}
-              className="hover:text-emerald-400 font-bold"
-            >
-             View Attendees
-            </button> */}
-          </div>
-        )}
+        {isOrganizer && <div></div>}
 
         {!isOrganizer && !isAdmin && (
           <div>
@@ -163,21 +153,23 @@ export default function EventDetails() {
         {isOrganizer && (
           <div className="space-x-2">
             <CustomButton
-              // name="Edit"
               onClick={handleEditClick}
-              icon={<FontAwesomeIcon icon={faEdit} />}
+              icon={<FontAwesomeIcon icon={faPen} className="text-gray-800" />}
             />
             <CustomButton
-              // name="Delete"
               onClick={handleDeleteClick}
               icon={
-                <FontAwesomeIcon icon={faTrash} style={{ color: "black" }} />
+                <FontAwesomeIcon icon={faTrash} className="text-gray-800" />
               }
             />
             <CustomButton
               onClick={handleViewAttendees}
-              icon={<FontAwesomeIcon icon={faPeopleArrows} />}
-              // name="View"
+              icon={
+                <FontAwesomeIcon
+                  icon={faPeopleGroup}
+                  className="text-gray-800"
+                />
+              }
             />
           </div>
         )}
@@ -185,8 +177,7 @@ export default function EventDetails() {
         {/* chat component inserted in event details */}
         <Chat eventId={event?._id} />
       </div>
-
-      <div className="flex w-[40vw] border items-center justify-center p2 ">
+      <div className="flex w-[40vw] border items-center justify-center p-2 rounded-xl">
         <img src={event?.imgPath} alt="" className="overflow-hidden" />
       </div>
     </div>
