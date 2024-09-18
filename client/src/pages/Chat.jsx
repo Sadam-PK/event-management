@@ -64,7 +64,6 @@ const Chat = ({ eventId }) => {
     };
   }, [eventId]);
 
-
   const sendMessage = () => {
     if (ws && message) {
       const messagePayload = {
@@ -82,7 +81,7 @@ const Chat = ({ eventId }) => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log('Messages: ', messages); // Debugging
+  console.log("Messages=>>>> ", messages.map((e)=>{return e.sender})); // Debugging
 
   return (
     <div className="absolute -bottom-12 right-0 mr-10">
@@ -112,11 +111,14 @@ const Chat = ({ eventId }) => {
 
           {/* Display incoming messages */}
           <div className="h-screen mb-2 overflow-y-auto border">
-            {messages.map((msg, index) => (
-              <p key={index}>
-                <strong>{msg.sender || "anonymous"}:</strong> {msg.content}
-              </p>
-            ))}
+            {messages.map((msg, index) => {
+              return (
+                <p key={index}>
+                  
+                  <strong>{msg.sender}:</strong> {msg.content}
+                </p>
+              );
+            })}
           </div>
 
           {/* Input to send a message */}

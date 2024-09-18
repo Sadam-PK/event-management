@@ -157,7 +157,18 @@ const router = express.Router();
   router.get("/events/:eventId/messages", async (req, res) => {
     try {
       const { eventId } = req.params;
-      const chat = await Chat.findOne({ event: eventId }).populate("messages");
+
+      // Find the chat associated with the event and populate messages with sender details
+      const chat = await Chat.findOne({ event: eventId }).populate("messages"
+      //   {
+      //   path: "messages",
+      //   populate: {
+      //     path: "sender", // Populate the sender field within messages
+      //     select: "username", // Specify fields to include from User model
+      //   },
+      // }
+    );
+
       if (!chat) {
         return res.status(404).json({ error: "No chat found for this event" });
       }
