@@ -80,7 +80,7 @@ function createWebSocketServer(httpServer) {
             client.send(
               JSON.stringify({
                 sender: userId,
-                message: text,
+                content: text,
               })
             );
           }
