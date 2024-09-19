@@ -7,11 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
 import axios from "axios"; // For fetching old messages
 
-const Chat = ({ eventId }) => {
+export default function Chat({ eventId }) {
   const [ws, setWs] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false); // To control expand/collapse
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,14 +27,14 @@ const Chat = ({ eventId }) => {
             },
           }
         );
-        console.log("Fetched Messages: ", response.data); // Debugging
-        setMessages(response.data); // Assuming the API returns an array of messages
+        console.log("Fetched Messages: ", response.data);
+        setMessages(response.data); // Set messages with sender usernames
       } catch (error) {
         console.error("Error fetching previous messages:", error);
       }
     };
 
-    fetchMessages(); // Fetch previous messages when the component mounts
+    fetchMessages();
 
     // WebSocket setup
     const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
@@ -45,7 +45,7 @@ const Chat = ({ eventId }) => {
 
     socket.onmessage = (event) => {
       const incomingMessage = JSON.parse(event.data);
-      console.log("Incoming WebSocket Message: ", incomingMessage); // Debugging
+      console.log("Incoming WebSocket Message: ", incomingMessage);
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     };
 
@@ -76,16 +76,14 @@ const Chat = ({ eventId }) => {
     }
   };
 
-  // Toggle between expanded and collapsed states
   const toggleChat = () => {
     setIsExpanded(!isExpanded);
   };
 
-  console.log("Messages=>>>> ", messages.map((e)=>{return e.sender})); // Debugging
+  console.log("Messages=>>>> ", messages);
 
   return (
     <div className="absolute -bottom-12 right-0 mr-10">
-      {/* Button to toggle chat visibility */}
       <button onClick={toggleChat}>
         {isExpanded ? (
           <FontAwesomeIcon
@@ -101,27 +99,20 @@ const Chat = ({ eventId }) => {
         )}
       </button>
 
-      {/* Chat box with conditional rendering based on `isExpanded` */}
       {isExpanded && (
         <div
-          className="bg-gray-100 border border-gray-500 w-[30vw] h-[70vh] p-5 mt-2
-        justify-between rounded-xl flex flex-col"
+          className="bg-gray-100 border border-gray-500 w-[30vw] h-[70vh] p-5 mt-2 justify-between rounded-xl flex flex-col"
         >
           <h2 className="py-2 font-bold border-b">Event Chat</h2>
 
-          {/* Display incoming messages */}
           <div className="h-screen mb-2 overflow-y-auto border">
-            {messages.map((msg, index) => {
-              return (
-                <p key={index}>
-                  
-                  <strong>{msg.sender}:</strong> {msg.content}
-                </p>
-              );
-            })}
+            {messages.map((msg, index) => (
+              <p key={index}>
+                <strong>{msg.sender.username}:</strong> {msg.content}
+              </p>
+            ))}
           </div>
 
-          {/* Input to send a message */}
           <div className="flex">
             <input
               type="text"
@@ -143,4 +134,4 @@ const Chat = ({ eventId }) => {
   );
 };
 
-export default Chat;
+

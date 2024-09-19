@@ -47,13 +47,13 @@ const router = express.Router();
   router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const response = loginSchema.safeParse({ username, password });
-
+  
     if (response.success) {
       const user = await User.findOne({ username: response.data.username });
-
+  
       if (user && user.password === password) {
         // Assuming password is stored as plain text
-        const token = jwt.sign({ _id: user._id }, SECRET, {
+        const token = jwt.sign({ _id: user._id, username: user.username }, SECRET, {
           expiresIn: "1h",
         });
         res.json({ message: "Logged in successfully", token });
@@ -64,6 +64,7 @@ const router = express.Router();
       res.status(400).json({ error: response.error.errors });
     }
   });
+  
 
   // Current User
   router.get("/me", authenticateJwt, async (req, res) => {
@@ -157,27 +158,27 @@ const router = express.Router();
   router.get("/events/:eventId/messages", async (req, res) => {
     try {
       const { eventId } = req.params;
-
+  
       // Find the chat associated with the event and populate messages with sender details
-      const chat = await Chat.findOne({ event: eventId }).populate("messages"
-      //   {
-      //   path: "messages",
-      //   populate: {
-      //     path: "sender", // Populate the sender field within messages
-      //     select: "username", // Specify fields to include from User model
-      //   },
-      // }
-    );
-
+      const chat = await Chat.findOne({ event: eventId })
+        .populate({
+          path: "messages",
+          populate: {
+            path: "sender", // Populate the sender field within messages
+            select: "username", // Specify fields to include from User model
+          },
+        });
+  
       if (!chat) {
         return res.status(404).json({ error: "No chat found for this event" });
       }
-
+  
       res.json(chat.messages);
     } catch (error) {
       res.status(500).json({ error: "Server error" });
     }
   });
+  
 })();
 
 module.exports = router;

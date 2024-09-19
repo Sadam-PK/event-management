@@ -3,7 +3,7 @@ require("dotenv").config();
 const SECRET = process.env.SECRET;
 
 const authenticateWebSocket = (ws, req, next) => {
-  const token = req.url.split("token=")[1]; 
+  const token = req.url.split("token=")[1];
 
   if (token) {
     jwt.verify(token, SECRET, (err, user) => {
@@ -11,7 +11,7 @@ const authenticateWebSocket = (ws, req, next) => {
         ws.close(4001, "Unauthorized");
         return;
       }
-      ws.user = user;
+      ws.user = user; // Include user info, including username
       next();
     });
   } else {

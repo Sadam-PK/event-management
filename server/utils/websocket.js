@@ -19,31 +19,24 @@ function createWebSocketServer(httpServer) {
 
   wss.on("connection", (ws, req) => {
     // Assuming `wsAuth` attaches user to ws
-    const userId = ws.user._id;
+    const { _id: userId, username } = ws.user;
 
-    // Set userId to the WebSocket connection for later use
+    // Set userId and username to the WebSocket connection for later use
     ws.userId = userId;
+    ws.username = username;
 
     // Handle incoming messages
     ws.on("message", async (message) => {
       try {
-        const { eventId, receiverId, text } = JSON.parse(message);
+        const { eventId, text } = JSON.parse(message);
 
         // Set the eventId on the ws object for future messages
         ws.eventId = eventId;
 
         // Check if the user is part of the event
-        const event = await Event.findById(eventId)
-          .populate("attendees")
-          .exec();
+        const event = await Event.findById(eventId).populate("attendees").exec();
 
-        if (
-          !event ||
-          (event.createdBy.toString() !== userId.toString() &&
-            !event.attendees.some(
-              (attendee) => attendee._id.toString() === userId.toString()
-            ))
-        ) {
+        if (!event || (event.createdBy.toString() !== userId.toString() && !event.attendees.some(attendee => attendee._id.toString() === userId.toString()))) {
           ws.send("You are not authorized to chat in this event.");
           return;
         }
@@ -69,17 +62,19 @@ function createWebSocketServer(httpServer) {
           { $push: { messages: messageDoc._id } }
         );
 
+        // Find the sender username
+        const user = await User.findById(userId);
+        const senderUsername = user.username;
+
         // Broadcast the message to all clients connected to the same event
         wss.clients.forEach((client) => {
-          if (
-            client.readyState === WebSocket.OPEN &&
-            client.userId &&
-            client.eventId === eventId
-          ) {
+          if (client.readyState === WebSocket.OPEN && client.userId && client.eventId === eventId) {
             // Send the message to the connected clients
             client.send(
               JSON.stringify({
-                sender: userId,
+                sender: {
+                  username: senderUsername
+                },
                 content: text,
               })
             );
