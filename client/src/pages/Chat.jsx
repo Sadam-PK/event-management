@@ -27,7 +27,7 @@ export default function Chat({ eventId }) {
             },
           }
         );
-        console.log("Fetched Messages: ", response.data);
+        // console.log("Fetched Messages: ", response.data);
         setMessages(response.data); // Set messages with sender usernames
       } catch (error) {
         console.error("Error fetching previous messages:", error);
@@ -45,7 +45,7 @@ export default function Chat({ eventId }) {
 
     socket.onmessage = (event) => {
       const incomingMessage = JSON.parse(event.data);
-      console.log("Incoming WebSocket Message: ", incomingMessage);
+      // console.log("Incoming WebSocket Message: ", incomingMessage);
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     };
 
@@ -80,7 +80,7 @@ export default function Chat({ eventId }) {
     setIsExpanded(!isExpanded);
   };
 
-  console.log("Messages=>>>> ", messages);
+  // console.log("Messages=>>>> ", messages);
 
   return (
     <div className="absolute -bottom-12 right-0 mr-10">
