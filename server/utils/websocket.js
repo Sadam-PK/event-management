@@ -34,10 +34,23 @@ function createWebSocketServer(httpServer) {
         ws.eventId = eventId;
 
         // Check if the user is part of the event
-        const event = await Event.findById(eventId).populate("attendees").exec();
+        const event = await Event.findById(eventId)
+          .populate("attendees")
+          .exec();
 
-        if (!event || (event.createdBy.toString() !== userId.toString() && !event.attendees.some(attendee => attendee._id.toString() === userId.toString()))) {
-          ws.send("You are not authorized to chat in this event.");
+        if (
+          (!event ||
+            (event.createdBy.toString() !== userId.toString() &&
+              !event.attendees.some(
+                (attendee) => attendee._id.toString() === userId.toString()
+              )),
+          !text)
+        ) {
+          ws.send(
+            JSON.stringify({
+              error: "You are not authorized to chat in this event.",
+            })
+          );
           return;
         }
 
@@ -68,12 +81,17 @@ function createWebSocketServer(httpServer) {
 
         // Broadcast the message to all clients connected to the same event
         wss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN && client.userId && client.eventId === eventId) {
+          // console.log(`Sending message to client: ${client.userId}, eventId: ${client.eventId}, expected: ${eventId}`);
+          if (
+            client.readyState === WebSocket.OPEN &&
+            client.userId &&
+            client.eventId === eventId
+          ) {
             // Send the message to the connected clients
             client.send(
               JSON.stringify({
                 sender: {
-                  username: senderUsername
+                  username: senderUsername,
                 },
                 content: text,
               })

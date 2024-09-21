@@ -16,6 +16,7 @@ export default function Chat({ eventId }) {
   useEffect(() => {
     if (!eventId) return;
     const token = localStorage.getItem("token");
+    const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
 
     // Fetch previous messages from the database using an API
     const fetchMessages = async () => {
@@ -38,10 +39,11 @@ export default function Chat({ eventId }) {
     fetchMessages();
 
     // WebSocket setup
-    const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
+    // const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
 
     socket.onopen = () => {
       console.log("Connected to WebSocket");
+      socket.send(JSON.stringify({ eventId }));
     };
 
     socket.onmessage = (event) => {
@@ -65,7 +67,8 @@ export default function Chat({ eventId }) {
     };
   }, [eventId]);
 
-  const sendMessage = () => {
+  const sendMessage = (e) => {
+    e.preventDefault();
     if (ws && message) {
       const messagePayload = {
         eventId: eventId,
