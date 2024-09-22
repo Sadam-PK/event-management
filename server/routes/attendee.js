@@ -1,10 +1,10 @@
 const express = require("express");
 const { authenticateJwt } = require("../middleware/auth");
 require("dotenv").config();
-const { User, Event } = require("../db/index");
+const { User, Event, Notification } = require("../db/index");
 const router = express.Router();
 
-// fetch organizers created events 
+// fetch organizers created events
 router.get("/events", authenticateJwt, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -57,7 +57,6 @@ router.get("/events/:id", authenticateJwt, async (req, res) => {
   }
 });
 
-
 // Join an event
 router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
   try {
@@ -100,5 +99,43 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 });
+
+// Get Notification
+router.get("/notification", authenticateJwt, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // console.log("User ID from JWT:", userId); // Log the userId
+
+    // Fetch notifications and populate the event and its attendees
+    const notifications = await Notification.find().populate({
+      path: 'event',
+      populate: {
+        path: 'attendees',
+        select: '_id',
+      },
+    });
+
+    // console.log("Fetched Notifications:", notifications); // Log notifications for debugging
+
+    // Filter notifications for events the user is attending
+    const filteredNotifications = notifications.filter((notification) => {
+      return (
+        notification.event && // Ensure the event is populated
+        notification.event.attendees.some(attendeeId => attendeeId.equals(userId)) // Use .equals to compare ObjectIds
+      );
+    });
+
+    console.log("Filtered Notifications:", filteredNotifications); // Log filtered notifications
+
+    res.status(200).json(filteredNotifications);
+  } catch (error) {
+    // console.error("Error fetching notifications:", error); // Log the error
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+});
+
+
+
 
 module.exports = router;

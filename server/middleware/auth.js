@@ -15,6 +15,8 @@ const authenticateJwt = (req, res, next) => {
       // console.log(user);
 
       req.user = user;
+      // console.log('middle log =>>>>> ' + user._id);
+      
       next();
     });
   } else {

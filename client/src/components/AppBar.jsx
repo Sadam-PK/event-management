@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout, userMe } from "../store/features/user/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
 export default function AppBar() {
   const navigate = useNavigate();
@@ -12,12 +13,30 @@ export default function AppBar() {
   const [notification, setNotification] = useState(false); // event notification
   const [newEvent, setNewEvent] = useState([]); // event notification data
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/attendee/notification",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setNewEvent(response.data); // Ensure response.data contains the expected structure
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
   useEffect(() => {
     if (status === "idle") {
       dispatch(userMe());
     } else if (status === "success" && !user) {
       navigate("/login");
     }
+
+    fetchNotifications();
   }, [user, status, navigate, dispatch]);
 
   const handleLogout = () => {
@@ -29,7 +48,7 @@ export default function AppBar() {
 
   const handleNotification = () => {
     setNotification(!notification);
-    setNewEvent([])
+    // setNewEvent([])
   };
 
   if (!user) {
@@ -87,8 +106,8 @@ export default function AppBar() {
         p-2 border"
         >
           notifications
-          {newEvent.map((e) => {
-            return <p>{e}</p>;
+          {newEvent.map((e, i) => {
+            return <p key={i}>{e?.title}</p>;
           })}
         </div>
       )}

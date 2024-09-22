@@ -70,11 +70,19 @@ const chatSchema = new mongoose.Schema({
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
 });
 
+const notificationSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  event: { type: mongoose.Types.ObjectId, ref: "Event", required: true }, // Reference to event
+  createdAt: { type: Date, default: Date.now }, // Notification creation time
+  isRead: { type: Boolean, default: false },
+});
+
 const User = mongoose.model("User", userSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Event = mongoose.model("Event", eventSchema);
 const Message = mongoose.model("Message", messageSchema);
 const Chat = mongoose.model("Chat", chatSchema);
+const Notification = mongoose.model("Notification", notificationSchema);
 
 module.exports = {
   User,
@@ -82,4 +90,5 @@ module.exports = {
   Event,
   Message,
   Chat,
+  Notification,
 };

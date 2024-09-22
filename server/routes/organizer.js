@@ -2,7 +2,7 @@ const express = require("express");
 const { authenticateJwt } = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { User, Event } = require("../db/index");
+const { User, Event, Notification } = require("../db/index");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
@@ -39,6 +39,7 @@ const fs = require("fs");
   });
 
   // Create an event
+
   router.post(
     "/create_event",
     authenticateJwt,
@@ -209,6 +210,18 @@ const fs = require("fs");
         // Save the updated event
         await event.save();
 
+        const attendees = event.attendees;
+        attendees.forEach(async (attendeeId) => {
+          const notification = new Notification({
+            title: "Event has been updated",
+            event: event._id,
+            recipient: attendeeId,
+          });
+          await notification.save();
+        });
+
+        console.log(attendees);
+
         res.status(200).json({ message: "Event updated successfully", event });
       } catch (error) {
         console.error("Error updating event:", error);
@@ -216,6 +229,7 @@ const fs = require("fs");
       }
     }
   );
+
   // Delete an event
   router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {
     try {
@@ -242,6 +256,9 @@ const fs = require("fs");
       res.status(500).json({ error: "Error deleting event" });
     }
   });
+
+  // Notification of event ...
+
 })();
 
 module.exports = router;
