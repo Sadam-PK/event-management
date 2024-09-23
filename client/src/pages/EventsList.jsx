@@ -11,9 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "../components/customButton";
 import {
   faArrowLeft,
-  faArrowRight,
-  faBackspace,
-  faForward,
+  faArrowRight
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function EventsList() {
@@ -21,7 +19,7 @@ export default function EventsList() {
   const events = useSelector((state) => state.event.events);
   const currentPage = useSelector((state) => state.event.currentPage);
   const totalPages = useSelector((state) => state.event.totalPages);
-  const isLoading = useSelector((state) => state.event.isLoading);
+  // const isLoading = useSelector((state) => state.event.isLoading);
   const navigate = useNavigate();
   const location = useLocation();
   const [query, setQuery] = useState(""); // Initial empty query state

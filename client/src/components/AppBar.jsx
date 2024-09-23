@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, userMe } from "../store/features/user/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 export default function AppBar() {
@@ -11,23 +11,10 @@ export default function AppBar() {
   const dispatch = useDispatch();
   const { user, status } = useSelector((state) => state.user);
   const [notification, setNotification] = useState(false); // event notification
-  const [newEvent, setNewEvent] = useState([]); // event notification data
+  const [newEvent, setNewEvent] = useState([]); // event notification data]
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/attendee/notification",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setNewEvent(response.data); // Ensure response.data contains the expected structure
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    }
-  };
+  const unReadNotifications = newEvent.filter((e) => e.isRead === false);
+  console.log("filter = >>>> " + unReadNotifications);
 
   useEffect(() => {
     if (status === "idle") {
@@ -39,6 +26,23 @@ export default function AppBar() {
     fetchNotifications();
   }, [user, status, navigate, dispatch]);
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/attendee/notification",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setNewEvent(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  // logout the user
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -48,7 +52,6 @@ export default function AppBar() {
 
   const handleNotification = () => {
     setNotification(!notification);
-    // setNewEvent([])
   };
 
   if (!user) {
@@ -57,9 +60,6 @@ export default function AppBar() {
         <Link to="/" className="font-bold">
           Event Management
         </Link>
-        {/* <a href="/" className="font-bold">
-          Event Management
-        </a> */}
         <ul className="flex flex-row gap-5">
           <li>
             <Link to="/login">Login</Link>
@@ -78,9 +78,11 @@ export default function AppBar() {
         <Link to="/" className="font-bold">
           Event Management
         </Link>
+
+        {/* ------ show bell RED or GREEN ------- */}
         <ul className="flex flex-row gap-5">
           <li>
-            {newEvent.length === 0 ? (
+            {unReadNotifications.length === 0 ? (
               <FontAwesomeIcon
                 icon={faBell}
                 className="text-xl text-teal-700 hover:text-emerald-600 cursor-pointer"
@@ -100,14 +102,34 @@ export default function AppBar() {
           </li>
         </ul>
       </div>
+      {console.log("unread = " + unReadNotifications.length)}
       {notification && (
         <div
           className="h-[80vh] w-80 absolute bg-emerald-200 right-20
         p-2 border"
         >
-          notifications
-          {newEvent.map((e, i) => {
-            return <p key={i}>{e?.title}</p>;
+          {unReadNotifications.map((e, i) => {
+            return (
+              <ul className="">
+                {/* showing unRead notifications only */}
+                {unReadNotifications && newEvent ? (
+                  <li
+                    key={i}
+                    className="px-2 py-3 flex justify-between items-center border-b
+                border-gray-500 cursor-pointer hover:text-gray-900 text-gray-700"
+                    onClick={""}
+                  >
+                    {e?.title}{" "}
+                    <FontAwesomeIcon
+                      icon={faCircleXmark}
+                      className="text-blue-600 cursor-pointer hover:text-red-700"
+                    />
+                  </li>
+                ) : (
+                  <li key={i}></li>
+                )}
+              </ul>
+            );
           })}
         </div>
       )}
