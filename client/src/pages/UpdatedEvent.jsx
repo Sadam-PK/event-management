@@ -3,6 +3,8 @@ import CustomInput from "../components/customInput";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Audio } from "react-loader-spinner";
+
 
 export default function UpdateEvent() {
   const [title, setTitle] = useState("");
@@ -12,6 +14,8 @@ export default function UpdateEvent() {
   const [date, setDate] = useState("");
   const [location, setLocation] = useState("");
   const [maxAttendees, setMaxAttendees] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -59,6 +63,7 @@ export default function UpdateEvent() {
 
   const handleUpdateEvent = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("title", title);
@@ -87,17 +92,19 @@ export default function UpdateEvent() {
 
       if (response.status === 200) {
         // console.log("Event updated successfully:", response.data);
-        toast("Event Updated");
+        toast.success("Event Updated");
         navigate("/");
       } else {
-        console.error("Error updating event:", response.data.error);
+        toast.error("Error updating event: " + response.data.error);
       }
+      setLoading(false);
     } catch (error) {
       console.error(
         "Error updating event:",
         error.response ? error.response.data : error.message
       );
     }
+    setLoading(false);
   };
 
   const today = () => {
@@ -106,6 +113,15 @@ export default function UpdateEvent() {
     const oneDayAhead = today.toISOString().split("T")[0];
     return oneDayAhead;
   };
+
+  if (loading == true) {
+    return (
+      <div className="justify-center items-center flex flex-col h-screen gap-2">
+        <Audio height="80" width="80" color="green" ariaLabel="loading" />
+        <div>updating..</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center h-screen justify-center">

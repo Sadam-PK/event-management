@@ -135,6 +135,28 @@ router.get("/notification", authenticateJwt, async (req, res) => {
   }
 });
 
+router.patch('/notifications/:id', async (req, res) => {
+  const notificationId = req.params.id;
+  const { isRead } = req.body;  // Extract the 'isRead' field from the request body
+
+  try {
+    // Find the notification by ID and update only the 'isRead' field
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { isRead: isRead }, // Update the 'isRead' field
+      { new: true }   // Return the updated document
+    );
+
+    if (!updatedNotification) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+
+    res.json(updatedNotification);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating notification', error });
+  }
+});
+
 
 
 
