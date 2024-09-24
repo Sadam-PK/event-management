@@ -168,60 +168,57 @@ const fs = require("fs");
     async (req, res) => {
       try {
         const { eventId } = req.params;
-        const { title, date, time, location, description, maxAttendees } =
-          req.body;
-
+        const { title, date, time, location, description, maxAttendees } = req.body;
         const userId = req.user._id;
-
+  
         // Find the event and ensure the user is the organizer
         const event = await Event.findById(eventId);
         if (!event) {
           return res.status(404).json({ error: "Event not found" });
         }
         if (event.createdBy.toString() !== userId.toString()) {
-          return res
-            .status(403)
-            .json({ error: "Only the organizer can update this event" });
+          return res.status(403).json({ error: "Only the organizer can update this event" });
         }
-
-        // Update the event title if provided
+  
+        // Update event fields
         event.title = title || event.title;
         event.time = time;
         event.date = date;
         event.location = location;
         event.description = description;
         event.maxAttendees = maxAttendees;
-
-        // Check if a new photo is uploaded
+  
+        // Upload new photo to Cloudinary if provided
         if (req.file) {
-          // Upload the new photo to Cloudinary
           const upload = await cloudinary.uploader.upload(req.file.path);
-
-          // Update the imgPath with the new Cloudinary URL
           event.imgPath = upload.secure_url;
+  
+          // Delete the local file after upload
+          fs.unlink(req.file.path, (err) => {
+            if (err) {
+              console.error("Error deleting file:", err);
+            }
+          });
         }
-        // Remove the file from the local uploads folder
-        fs.unlink(req.file.path, (err) => {
-          if (err) {
-            console.error("Error deleting file:", err);
-          }
-        });
-
+  
         // Save the updated event
         await event.save();
-
+  
+        // Notify each attendee
         const attendees = event.attendees;
-        attendees.forEach(async (attendeeId) => {
-          const notification = new Notification({
-            title: "Event has been updated",
-            event: event._id,
-            recipient: attendeeId,
-          });
-          await notification.save();
-        });
-
-        console.log(attendees);
-
+        for (const attendeeId of attendees) {
+          try {
+            const notification = new Notification({
+              title: "Event has been updated",
+              event: event._id,
+              recipient: attendeeId,
+            });
+            await notification.save();
+          } catch (error) {
+            console.error(`Error saving notification for attendee ${attendeeId}:`, error);
+          }
+        }
+  
         res.status(200).json({ message: "Event updated successfully", event });
       } catch (error) {
         console.error("Error updating event:", error);
@@ -229,6 +226,7 @@ const fs = require("fs");
       }
     }
   );
+  
 
   // Delete an event
   router.delete("/delete_event/:eventId", authenticateJwt, async (req, res) => {

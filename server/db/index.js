@@ -71,10 +71,11 @@ const chatSchema = new mongoose.Schema({
 });
 
 const notificationSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  event: { type: mongoose.Types.ObjectId, ref: "Event", required: true }, // Reference to event
+  recipient: { type: mongoose.Types.ObjectId, ref: 'User', required: true }, // Reference to the User receiving the notification
+  title: { type: String, required: true }, // Title of the notification
+  event: { type: mongoose.Types.ObjectId, ref: 'Event', required: true }, // Reference to the event related to the notification
   createdAt: { type: Date, default: Date.now }, // Notification creation time
-  isRead: { type: Boolean, default: false },
+  isRead: { type: Boolean, default: false }, // Status to check if the notification is read
 });
 
 const User = mongoose.model("User", userSchema);

@@ -105,35 +105,35 @@ router.get("/notification", authenticateJwt, async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // console.log("User ID from JWT:", userId); // Log the userId
+    // Fetch event IDs where the user is an attendee
+    const eventIds = await Event.find({ attendees: userId }).select('_id');
 
-    // Fetch notifications and populate the event and its attendees
-    const notifications = await Notification.find().populate({
-      path: 'event',
-      populate: {
-        path: 'attendees',
-        select: '_id',
-      },
-    });
+    // Fetch notifications for those events and filter by recipient
+    const notifications = await Notification.find({
+      event: { $in: eventIds },
+      recipient: userId // Filter by the recipient to ensure notifications belong to the logged-in user
+    })
+    .populate('event', '_id title')
+    .exec();
 
-    // console.log("Fetched Notifications:", notifications); // Log notifications for debugging
+    // Use a Set to filter out duplicate notifications based on _id
+    const uniqueNotifications = [...new Map(notifications.map(item => [item._id, item])).values()];
 
-    // Filter notifications for events the user is attending
-    const filteredNotifications = notifications.filter((notification) => {
-      return (
-        notification.event && // Ensure the event is populated
-        notification.event.attendees.some(attendeeId => attendeeId.equals(userId)) // Use .equals to compare ObjectIds
-      );
-    });
-
-    console.log("Filtered Notifications:", filteredNotifications); // Log filtered notifications
-
-    res.status(200).json(filteredNotifications);
+    console.log('Unique notifications from backend:', uniqueNotifications);
+    
+    res.status(200).json(uniqueNotifications);
   } catch (error) {
-    // console.error("Error fetching notifications:", error); // Log the error
+    console.error("Error fetching notifications:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 });
+
+
+
+
+
+
+
 
 router.patch('/notifications/:id', async (req, res) => {
   const notificationId = req.params.id;

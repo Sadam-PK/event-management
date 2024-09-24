@@ -13,8 +13,9 @@ export default function AppBar() {
   const [notification, setNotification] = useState(false); // event notification toggle
   const [newEvent, setNewEvent] = useState([]); // event notification data
 
-  // Filter unread notifications
-  const unReadNotifications = newEvent.filter((e) => !e.isRead);
+  // Filter unread and read notifications
+  const unreadNotifications = newEvent.filter((e) => !e.isRead);
+  const readNotifications = newEvent.filter((e) => e.isRead);
 
   useEffect(() => {
     // Check if the user session is valid
@@ -40,11 +41,16 @@ export default function AppBar() {
           },
         }
       );
+      console.log("Fetched Notifications:", response.data); // Check for duplicates here
       setNewEvent(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   };
+  
+  
+  
+  
 
   // logout the user
   const handleLogout = () => {
@@ -60,18 +66,15 @@ export default function AppBar() {
   // Mark notification as read
   const handleReadNotification = async (id) => {
     try {
-      // Make a PATCH request to update the notification
-      const response = await axios.patch(
+      await axios.patch(
         `http://localhost:3000/attendee/notifications/${id}`,
-        { isRead: true }, // Use 'isRead' instead of 'read'
+        { isRead: true },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      console.log("Updated notification:", response.data);
-  
       // Update the local state after marking as read
       setNewEvent((prevEvents) =>
         prevEvents.map((e) => (e._id === id ? { ...e, isRead: true } : e))
@@ -80,7 +83,6 @@ export default function AppBar() {
       console.error("Error updating notification:", error);
     }
   };
-  
 
   // If user is not logged in, show login/signup links
   if (!user) {
@@ -112,7 +114,7 @@ export default function AppBar() {
         <ul className="flex flex-row gap-5">
           <li>
             {/* Show bell icon with different colors based on unread notifications */}
-            {unReadNotifications.length === 0 ? (
+            {unreadNotifications.length === 0 ? (
               <FontAwesomeIcon
                 icon={faBell}
                 className="text-xl text-teal-700 hover:text-emerald-600 cursor-pointer"
@@ -139,11 +141,12 @@ export default function AppBar() {
       {/* Notifications dropdown */}
       {notification && (
         <div className="h-[80vh] w-80 absolute bg-emerald-200 right-20 p-2 border">
-          {unReadNotifications.length > 0 ? (
+          <h3 className="font-bold">Unread Notifications</h3>
+          {unreadNotifications.length > 0 ? (
             <ul>
-              {unReadNotifications.map((e) => (
+              {unreadNotifications.map((e) => (
                 <li
-                  key={e._id} // Use notification id as unique key
+                  key={e._id}
                   className="px-2 py-3 flex justify-between items-center border-b border-gray-500 cursor-pointer hover:text-gray-900 text-gray-700"
                   onClick={() => handleReadNotification(e._id)}
                 >
@@ -156,7 +159,23 @@ export default function AppBar() {
               ))}
             </ul>
           ) : (
-            <p>No new notifications</p>
+            <p>No unread notifications</p>
+          )}
+
+          <h3 className="font-bold mt-4">Read Notifications</h3>
+          {readNotifications.length > 0 ? (
+            <ul>
+              {readNotifications.map((e) => (
+                <li
+                  key={e._id}
+                  className="px-2 py-3 flex justify-between items-center border-b border-gray-300 text-gray-500"
+                >
+                  {e?.title}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No read notifications</p>
           )}
         </div>
       )}
