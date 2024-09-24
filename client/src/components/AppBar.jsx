@@ -41,7 +41,7 @@ export default function AppBar() {
           },
         }
       );
-      console.log("Fetched Notifications:", response.data); // Check for duplicates here
+      // console.log("Fetched Notifications:", response.data); // Check for duplicates here
       setNewEvent(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);

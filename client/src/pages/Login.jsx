@@ -35,7 +35,7 @@ export default function Login() {
         dispatch(userMe());
         navigate("/");
       } else {
-        console.log("Token is null");
+        toast.error("Token is null");
       }
     } catch (error) {
       toast.error("Login failed");
@@ -72,8 +72,10 @@ export default function Login() {
   // }
 
   return (
-    <div className="flex flex-col w-auto h-screen p-3 gap-3 
-    justify-center items-center mx-auto m-10">
+    <div
+      className="flex flex-col w-auto h-screen p-3 gap-3 
+    justify-center items-center mx-auto m-10"
+    >
       <h2 className="font-bold text-xl">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
