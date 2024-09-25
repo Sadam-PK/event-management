@@ -105,16 +105,11 @@ router.get("/notification", authenticateJwt, async (req, res) => {
   try {
     const userId = req.user._id;
 
-    // Fetch event IDs where the user is an attendee
-    const eventIds = await Event.find({ attendees: userId }).select("_id");
-
-    // Fetch notifications for those events and filter by recipient
+    // Fetch notifications for the logged-in user (recipient)
     const notifications = await Notification.find({
-      event: { $in: eventIds },
-      // Filter by the recipient to ensure notifications belong to the logged-in user
       recipient: userId,
     })
-      .populate("event", "_id title")
+      .populate("event", "_id title") // fetching event data the notifications have
       .exec();
 
     res.status(200).json(notifications);
@@ -124,6 +119,8 @@ router.get("/notification", authenticateJwt, async (req, res) => {
   }
 });
 
+
+// patch as Read the notifications
 router.patch("/notifications/:id", async (req, res) => {
   const notificationId = req.params.id;
   const { isRead } = req.body; // Extract the 'isRead' field from the request body
