@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userRegister } from "../store/features/register/registerSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import CustomButton from "../components/customButton";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -78,14 +79,22 @@ export default function Signup() {
         value={password}
         onChange={handlePasswordChange}
       />
-      <button
+      {/* <button
         className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
         hover:bg-transparent hover:border-emerald-400 hover:border-2
         hover:text-emerald-600"
         onClick={handleSubmit}
       >
         Register
-      </button>
+      </button> */}
+      <CustomButton
+        name="Register"
+        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
+        hover:bg-transparent hover:border-emerald-400 hover:border-2
+        hover:text-emerald-600"
+        onClick={handleSubmit}
+      />
+
       <div className="p-5">
         <p className="text-gray-500">
           Already have an account?{" "}

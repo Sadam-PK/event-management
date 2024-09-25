@@ -2,6 +2,7 @@ import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import CustomButton from "../../components/customButton";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,12 +14,11 @@ export default function Login() {
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
   const handleLogin = async () => {
-    
     try {
       const response = await fetch("http://localhost:3000/admin/login", {
         method: "POST",
         body: JSON.stringify({
-          email, // Now sending the correct email field
+          email,
           password,
         }),
         headers: {
@@ -54,12 +54,20 @@ export default function Login() {
         onChange={handlePasswordChange}
         type="password"
       />
-      <button
+
+      {/* <button
         className="bg-emerald-400 p-2 border rounded-md w-32"
         onClick={handleLogin}
       >
         Login
-      </button>
+      </button> */}
+
+      <CustomButton
+        name="Login"
+        className="bg-emerald-400 p-2 border rounded-md w-32"
+        onClick={handleLogin}
+      />
+
       <div className="p-5">
         <p className="text-gray-500">
           Don't have an account?{" "}

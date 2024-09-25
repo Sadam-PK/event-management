@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Audio } from "react-loader-spinner";
-
+import CustomButton from "../components/customButton";
 
 export default function UpdateEvent() {
   const [title, setTitle] = useState("");
@@ -15,7 +15,6 @@ export default function UpdateEvent() {
   const [location, setLocation] = useState("");
   const [maxAttendees, setMaxAttendees] = useState("");
   const [loading, setLoading] = useState(false);
-
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -170,12 +169,17 @@ export default function UpdateEvent() {
         />
         <input type="file" onChange={handleFileChange} />
 
-        <button
+        {/* <button
           className="bg-emerald-400 p-2 border rounded-md w-32"
           onClick={handleUpdateEvent}
         >
           Update Event
-        </button>
+        </button> */}
+        <CustomButton
+          className="bg-emerald-400 p-2 border rounded-md w-32"
+          onClick={handleUpdateEvent}
+          name="Update Event"
+        />
       </div>
     </div>
   );

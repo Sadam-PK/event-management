@@ -10,7 +10,7 @@ import { Audio } from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
-
+import CustomButton from "../components/customButton.jsx";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -82,7 +82,9 @@ export default function Login() {
       <h2 className="font-bold text-xl">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
-          icon={<FontAwesomeIcon icon={faUser} className="text-gray-700 mr-3"/>}
+          icon={
+            <FontAwesomeIcon icon={faUser} className="text-gray-700 mr-3" />
+          }
           placeholder="Email"
           value={username}
           onChange={handleUsernameChange}
@@ -90,21 +92,32 @@ export default function Login() {
       </div>
       <div className="w-full max-w-xs">
         <CustomInput
-        icon={<FontAwesomeIcon icon={faLock} className="text-gray-700 mr-3"/>}
+          icon={
+            <FontAwesomeIcon icon={faLock} className="text-gray-700 mr-3" />
+          }
           placeholder="Password"
           type="password"
           value={password}
           onChange={handlePasswordChange}
         />
       </div>
-      <button
+      {/* <button
         className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
         hover:bg-transparent hover:border-emerald-400 hover:border-2
         hover:text-emerald-600"
         onClick={handleSubmit}
       >
         Login
-      </button>
+      </button> */}
+
+      <CustomButton
+        name="Login"
+        onClick={handleSubmit}
+        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
+        hover:bg-transparent hover:border-emerald-400 hover:border-2
+        hover:text-emerald-600"
+      />
+
       <div className="p-5">
         <p className="text-gray-500">
           Don't have an account?{" "}

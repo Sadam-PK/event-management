@@ -9,10 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Loading from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "../components/customButton";
-import {
-  faArrowLeft,
-  faArrowRight
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function EventsList() {
   const dispatch = useDispatch();
@@ -118,13 +115,19 @@ export default function EventsList() {
                 placeholder="Search events"
                 className="border outline-none p-2"
               />
-              <button
+              {/* <button
                 onClick={handleSearch}
                 className="border outline-none p-2 rounded-r-xl
                  bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
               >
                 Search
-              </button>
+              </button> */}
+              <CustomButton
+                name="Search"
+                onClick={handleSearch}
+                className="border outline-none p-2 rounded-r-xl
+                 bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+              />
             </div>
             <div className="ml-4 rounded-sm">
               <select
@@ -164,7 +167,7 @@ export default function EventsList() {
                 Page {currentPage} of {totalPages}
               </span>
               <CustomButton
-                icon={<FontAwesomeIcon icon={faArrowRight}/>}
+                icon={<FontAwesomeIcon icon={faArrowRight} />}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
               />

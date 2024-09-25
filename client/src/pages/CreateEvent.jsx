@@ -7,6 +7,7 @@ import { eventSchema } from "../../../common/zodSchema";
 import CustomInput from "../components/customInput";
 import { z } from "zod";
 import { Audio } from "react-loader-spinner";
+import CustomButton from "../components/customButton";
 
 export default function CreateEvent() {
   const [title, setTitle] = useState("");
@@ -167,13 +168,18 @@ export default function CreateEvent() {
           onChange={handleFileChange}
           className="border p-3 w-[20vw]"
         />
-        <button
+        {/* <button
           className="bg-emerald-400 p-2 border rounded-md w-32 hover:bg-white
           hover:border-2 hover:border-emerald-500 hover:text-emerald-700"
           onClick={handleCreateEvent}
         >
           Create Event
-        </button>
+        </button> */}
+        <CustomButton 
+        name='Create Event'
+        className="bg-emerald-400 p-2 border rounded-md w-32 hover:bg-white
+        hover:border-2 hover:border-emerald-500 hover:text-emerald-700"
+        onClick={handleCreateEvent}/>
       </div>
     </div>
   );

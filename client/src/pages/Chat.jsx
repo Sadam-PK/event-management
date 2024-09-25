@@ -110,7 +110,7 @@ export default function Chat({ eventId }) {
           <div className="h-screen mb-2 overflow-y-auto border">
             {messages.map((msg, index) => (
               <p key={index}>
-                <strong>{msg.sender.username}:</strong> {msg.content}
+                <strong>{msg?.sender?.username}:</strong> {msg?.content}
               </p>
             ))}
           </div>
