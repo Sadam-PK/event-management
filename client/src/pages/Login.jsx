@@ -8,6 +8,9 @@ import { login, logout } from "../store/features/auth/authSlice";
 import { userMe } from "../store/features/user/userSlice";
 import { Audio } from "react-loader-spinner";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -74,11 +77,12 @@ export default function Login() {
   return (
     <div
       className="flex flex-col w-auto h-screen p-3 gap-3 
-    justify-center items-center mx-auto m-10"
+    justify-center items-center mx-auto"
     >
       <h2 className="font-bold text-xl">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
+          icon={<FontAwesomeIcon icon={faUser} className="text-gray-700 mr-3"/>}
           placeholder="Email"
           value={username}
           onChange={handleUsernameChange}
@@ -86,6 +90,7 @@ export default function Login() {
       </div>
       <div className="w-full max-w-xs">
         <CustomInput
+        icon={<FontAwesomeIcon icon={faLock} className="text-gray-700 mr-3"/>}
           placeholder="Password"
           type="password"
           value={password}
@@ -93,7 +98,7 @@ export default function Login() {
         />
       </div>
       <button
-        className="bg-emerald-400 p-2 border rounded-md w-32
+        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
         hover:bg-transparent hover:border-emerald-400 hover:border-2
         hover:text-emerald-600"
         onClick={handleSubmit}

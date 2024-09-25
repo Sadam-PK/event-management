@@ -2,7 +2,7 @@ export default function CustomRadio(props) {
   return (
     <div className="flex gap-5">
       <div className="flex gap-2 text-gray-500">
-        <label htmlFor="organizer">organizer</label>
+        <label htmlFor="organizer">Organizer</label>
         <input
           type="radio"
           id="organizer"
