@@ -13,24 +13,6 @@ export default function AppBar() {
   const [isNotification, setIsNotification] = useState(false); // check new notification toggle
   const [notifications, setNotifications] = useState([]); // event notifications array of the user
 
-  // Filter unread and read notifications
-  const unreadNotifications = notifications.filter((e) => !e.isRead);
-  const readNotifications = notifications.filter((e) => e.isRead);
-
-  useEffect(() => {
-    // Check if the user session is valid
-    if (status === "idle") {
-      dispatch(userMe());
-    } else if (status === "success" && !user) {
-      navigate("/login");
-    }
-
-    // Fetch notifications if user exists
-    if (user) {
-      fetchNotifications();
-    }
-  }, [user, status, navigate, dispatch]);
-
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
@@ -47,6 +29,24 @@ export default function AppBar() {
       console.error("Error fetching notifications:", error);
     }
   };
+
+  useEffect(() => {
+    // Check if the user session is valid
+    if (status === "idle") {
+      dispatch(userMe());
+    } else if (status === "success" && !user) {
+      navigate("/login");
+    }
+
+    // Fetch notifications if user exists
+    if (user) {
+      fetchNotifications();
+    }
+  }, [user, status, navigate, dispatch]);
+
+  // Filter unread and read notifications
+  const unreadNotifications = notifications.filter((e) => !e.isRead);
+  const readNotifications = notifications.filter((e) => e.isRead);
 
   // logout the user
   const handleLogout = () => {
