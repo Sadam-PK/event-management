@@ -10,12 +10,12 @@ export default function AppBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, status } = useSelector((state) => state.user);
-  const [notification, setNotification] = useState(false); // event notification toggle
-  const [newEvent, setNewEvent] = useState([]); // event notification data
+  const [isNotification, setIsNotification] = useState(false); // check new notification toggle
+  const [notifications, setNotifications] = useState([]); // event notifications array of the user
 
   // Filter unread and read notifications
-  const unreadNotifications = newEvent.filter((e) => !e.isRead);
-  const readNotifications = newEvent.filter((e) => e.isRead);
+  const unreadNotifications = notifications.filter((e) => !e.isRead);
+  const readNotifications = notifications.filter((e) => e.isRead);
 
   useEffect(() => {
     // Check if the user session is valid
@@ -42,15 +42,11 @@ export default function AppBar() {
         }
       );
       // console.log("Fetched Notifications:", response.data); // Check for duplicates here
-      setNewEvent(response.data);
+      setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   };
-  
-  
-  
-  
 
   // logout the user
   const handleLogout = () => {
@@ -60,7 +56,7 @@ export default function AppBar() {
 
   // notification toggle handler
   const toggleNotification = () => {
-    setNotification(!notification);
+    setIsNotification(!isNotification);
   };
 
   // Mark notification as read
@@ -76,7 +72,7 @@ export default function AppBar() {
         }
       );
       // Update the local state after marking as read
-      setNewEvent((prevEvents) =>
+      setNotifications((prevEvents) =>
         prevEvents.map((e) => (e._id === id ? { ...e, isRead: true } : e))
       );
     } catch (error) {
@@ -139,7 +135,7 @@ export default function AppBar() {
       </div>
 
       {/* Notifications dropdown */}
-      {notification && (
+      {isNotification && (
         <div className="h-[80vh] w-80 absolute bg-emerald-200 right-20 p-2 border">
           <h3 className="font-bold">Unread Notifications</h3>
           {unreadNotifications.length > 0 ? (
