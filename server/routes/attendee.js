@@ -111,19 +111,13 @@ router.get("/notification", authenticateJwt, async (req, res) => {
     // Fetch notifications for those events and filter by recipient
     const notifications = await Notification.find({
       event: { $in: eventIds },
-      recipient: userId, // Filter by the recipient to ensure notifications belong to the logged-in user
+      // Filter by the recipient to ensure notifications belong to the logged-in user
+      recipient: userId,
     })
       .populate("event", "_id title")
       .exec();
 
-    // Use a Set to filter out duplicate notifications based on _id
-    const uniqueNotifications = [
-      ...new Map(notifications.map((item) => [item._id, item])).values(),
-    ];
-
-    // console.log("Unique notifications from backend:", uniqueNotifications);
-
-    res.status(200).json(uniqueNotifications);
+    res.status(200).json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
