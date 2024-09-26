@@ -1,4 +1,3 @@
-
 // ---- card mapping through list of event
 export default function EventCard(props) {
   return (
@@ -9,6 +8,7 @@ export default function EventCard(props) {
       onClick={props.onClick}
     >
       {props.event.title}
+      <p className="font-thin text-sm">{props.event.location}</p>
       {/* <img src={props.event.imgPath} alt=""  className="p-2 border"/> */}
     </div>
   );
