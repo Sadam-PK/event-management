@@ -193,7 +193,11 @@ export default function EventDetails() {
         <Chat eventId={event?._id} />
       </div>
       <div className="flex w-[40vw] border items-center justify-center p-2 rounded-xl">
-        <img src={event?.imgPath} alt="" className="w-full h-full object-cover p-2" />
+        <img
+          src={event?.imgPath}
+          alt=""
+          className="w-full h-full object-cover p-2"
+        />
       </div>
     </div>
   );
