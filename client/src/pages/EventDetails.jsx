@@ -9,6 +9,7 @@ import {
   faPen,
   faPeopleGroup,
   faTrash,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Chat from "./Chat";
@@ -146,7 +147,13 @@ export default function EventDetails() {
         {!isOrganizer && !isAdmin && (
           <div>
             <div className="flex gap-2">
-              <CustomButton name="Join" onClick={handleJoinClick} />
+              <CustomButton
+                name="Join"
+                onClick={handleJoinClick}
+                className="border rounded-full p-2 bg-emerald-600
+                text-white hover:bg-white hover:text-emerald-600 border-emerald-600
+                hover:border-emerald-600 hover:transition duration-1000"
+              />
             </div>
           </div>
         )}
