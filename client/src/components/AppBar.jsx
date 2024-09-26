@@ -126,7 +126,8 @@ export default function AppBar() {
           </li>
           <li>{user?.username}</li>
           <li
-            className="cursor-pointer w-[6vw] text-center bg-emerald-600 text-white rounded-lg hover:bg-emerald-500"
+            className="cursor-pointer w-[6vw] text-center bg-emerald-600 text-white 
+            rounded-lg hover:bg-emerald-500"
             onClick={handleLogout}
           >
             Logout
@@ -143,7 +144,8 @@ export default function AppBar() {
               {unreadNotifications.map((e) => (
                 <li
                   key={e._id}
-                  className="px-2 py-3 flex justify-between items-center border-b border-gray-500 cursor-pointer hover:text-gray-900 text-gray-700"
+                  className="px-2 py-3 flex justify-between items-center border-b 
+                  border-gray-500 cursor-pointer hover:text-gray-900 text-gray-700"
                   onClick={() => handleReadNotification(e._id)}
                 >
                   {e?.title}
@@ -164,7 +166,8 @@ export default function AppBar() {
               {readNotifications.map((e) => (
                 <li
                   key={e._id}
-                  className="px-2 py-3 flex justify-between items-center border-b border-gray-300 text-gray-500"
+                  className="px-2 py-3 flex justify-between items-center border-b
+                   border-gray-300 text-gray-500"
                 >
                   {e?.title}
                 </li>

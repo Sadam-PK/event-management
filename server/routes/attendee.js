@@ -76,7 +76,7 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
     }
 
     // Check if the max number of attendees has been reached
-    if (event.attendees.length >= event.maxAttendees) {
+    if (event.maxAttendees <= 0) {
       return res
         .status(401)
         .json({ message: "Maximum number of attendees reached" });
@@ -88,6 +88,9 @@ router.post("/events/:eventId/attendees", authenticateJwt, async (req, res) => {
     }
     // Add the user to the event's attendees list
     event.attendees.push(userId);
+
+    // Decrement the maxAttendees by 1
+    event.maxAttendees -= 1;
     await event.save();
 
     // Add the event to the user's events list
@@ -118,7 +121,6 @@ router.get("/notification", authenticateJwt, async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 });
-
 
 // patch as Read the notifications
 router.patch("/notifications/:id", async (req, res) => {
