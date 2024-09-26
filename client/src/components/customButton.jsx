@@ -1,10 +1,12 @@
-export default function CustomButton({ name, onClick, icon, disabled, className }) {
+export default function CustomButton({
+  name,
+  onClick,
+  icon,
+  disabled,
+  className,
+}) {
   return (
-    <button
-      className={className}
-      onClick={onClick}
-      disabled={disabled}
-    >
+    <button className={className} onClick={onClick} disabled={disabled}>
       {name}
       {icon}
     </button>

@@ -162,6 +162,8 @@ export default function EventsList() {
                 icon={<FontAwesomeIcon icon={faArrowLeft} />}
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
+                className="border border-gray-500 px-3 rounded-xl cursor-pointer
+                hover:border-gray-400"
               />
               <span className="text-gray-500">
                 Page {currentPage} of {totalPages}
@@ -170,6 +172,8 @@ export default function EventsList() {
                 icon={<FontAwesomeIcon icon={faArrowRight} />}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
+                className="border border-gray-500 px-3 rounded-xl cursor-pointer
+                hover:border-gray-400"
               />
             </div>
           )}
