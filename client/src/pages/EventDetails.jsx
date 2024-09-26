@@ -182,7 +182,7 @@ export default function EventDetails() {
               icon={
                 <FontAwesomeIcon
                   icon={faPeopleGroup}
-                  className="text-gray-800 hover:text-green-600 text-xl"
+                  className="text-gray-800 hover:text-green-600 text-2xl"
                 />
               }
             />
@@ -193,7 +193,7 @@ export default function EventDetails() {
         <Chat eventId={event?._id} />
       </div>
       <div className="flex w-[40vw] border items-center justify-center p-2 rounded-xl">
-        <img src={event?.imgPath} alt="" className="overflow-hidden" />
+        <img src={event?.imgPath} alt="" className="w-full h-full object-cover p-2" />
       </div>
     </div>
   );
