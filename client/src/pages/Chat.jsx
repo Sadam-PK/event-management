@@ -108,9 +108,9 @@ export default function Chat({ eventId }) {
           <h2 className="py-2 font-bold border-b">Event Chat</h2>
 
           <div className="h-screen mb-2 overflow-y-auto border">
-            {messages.map((msg, index) => (
+            {messages?.map((msg, index) => (
               <p key={index}>
-                <strong>{msg?.sender?.username}:</strong> {msg?.content}
+                <strong>{msg?.sender?.username} </strong> {msg?.content}
               </p>
             ))}
           </div>
