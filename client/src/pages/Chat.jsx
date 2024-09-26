@@ -104,7 +104,8 @@ export default function Chat({ eventId }) {
       </button>
 
       {isExpanded && (
-        <div className="bg-gray-100 border border-gray-500 w-[30vw] h-[70vh] p-5 mt-2 justify-between rounded-xl flex flex-col">
+        <div className="bg-gray-100 border border-gray-500 w-[30vw] h-[70vh] p-5 mt-2 
+        justify-between rounded-xl flex flex-col">
           <h2 className="py-2 font-bold border-b">Event Chat</h2>
 
           <div className="h-screen mb-2 overflow-y-auto border">

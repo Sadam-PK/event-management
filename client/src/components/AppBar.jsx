@@ -136,7 +136,7 @@ export default function AppBar() {
 
       {/* Notifications dropdown */}
       {isNotification && (
-        <div className="h-[80vh] w-80 absolute bg-emerald-200 right-20 p-2 border">
+        <div className="h-[80vh] w-80 absolute bg-emerald-200 right-20 p-2 border z-10">
           <h3 className="font-bold">Unread Notifications</h3>
           {unreadNotifications.length > 0 ? (
             <ul>

@@ -151,15 +151,23 @@ export default function EventDetails() {
           </div>
         )}
         {isOrganizer && (
-          <div className="space-x-2">
+          <div className="space-x-10">
             <CustomButton
               onClick={handleEditClick}
-              icon={<FontAwesomeIcon icon={faPen} className="text-gray-800" />}
+              icon={
+                <FontAwesomeIcon
+                  icon={faPen}
+                  className="text-gray-800 hover:text-blue-700 text-xl"
+                />
+              }
             />
             <CustomButton
               onClick={handleDeleteClick}
               icon={
-                <FontAwesomeIcon icon={faTrash} className="text-gray-800" />
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  className="text-gray-800 hover:text-red-600 text-xl"
+                />
               }
             />
             <CustomButton
@@ -167,7 +175,7 @@ export default function EventDetails() {
               icon={
                 <FontAwesomeIcon
                   icon={faPeopleGroup}
-                  className="text-gray-800"
+                  className="text-gray-800 hover:text-green-600 text-xl"
                 />
               }
             />
