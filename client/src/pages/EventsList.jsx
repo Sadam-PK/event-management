@@ -9,7 +9,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Loading from "../components/Loading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomButton from "../components/customButton";
-import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 
 export default function EventsList() {
   const dispatch = useDispatch();
@@ -56,7 +60,10 @@ export default function EventsList() {
     }
   }, [location.search, dispatch, currentPage]);
 
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
+    console.log("asdasd");
+
     navigate(`/?query=${query}`, { replace: true });
     setSearchQuery(query); // Update searchQuery state to trigger effect
     dispatch(
@@ -68,6 +75,7 @@ export default function EventsList() {
         limit: 6,
       })
     );
+    console.log("zxcxzc");
   };
 
   const handleSortChange = (e) => {
@@ -113,19 +121,15 @@ export default function EventsList() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search events"
-                className="border outline-none p-2"
+                className="border outline-none p-2 rounded-l-full indent-3 w-[24vw]"
               />
-              {/* <button
-                onClick={handleSearch}
-                className="border outline-none p-2 rounded-r-xl
-                 bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
-              >
-                Search
-              </button> */}
+
               <CustomButton
-                name="Search"
+                type="button"
+                // name="Search"
+                icon={<FontAwesomeIcon icon={faSearch} width={"3vw"}/>}
                 onClick={handleSearch}
-                className="border outline-none p-2 rounded-r-xl
+                className="border outline-none p-2 rounded-r-full
                  bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
               />
             </div>
@@ -139,7 +143,7 @@ export default function EventsList() {
               </select>
             </div>
           </div>
-          <h2 className="font-bold text-xl">Events List</h2>
+          <h2 className="font-bold text-xl text-gray-700">Events List</h2>
           <div className="flex flex-wrap gap-5 justify-center">
             {events.length !== 0
               ? events.map((e) => (

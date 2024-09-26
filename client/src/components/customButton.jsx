@@ -4,9 +4,10 @@ export default function CustomButton({
   icon,
   disabled,
   className,
+  type
 }) {
   return (
-    <button className={className} onClick={onClick} disabled={disabled}>
+    <button className={className} onClick={onClick} disabled={disabled} type={type}>
       {name}
       {icon}
     </button>
