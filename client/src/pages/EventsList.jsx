@@ -22,7 +22,6 @@ export default function EventsList() {
   const totalPages = useSelector((state) => state.event.totalPages);
   const navigate = useNavigate();
   const location = useLocation();
-
   const [query, setQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState(
     new URLSearchParams(location.search).get("query") || ""
@@ -46,9 +45,9 @@ export default function EventsList() {
     const sortOrderParam =
       new URLSearchParams(location.search).get("sortOrder") || "asc";
 
-    setSearchQuery(queryParam || "");
-    setSortBy(sortField);
-    setSortOrder(sortOrderParam);
+    setSearchQuery(searchQuery || "");
+    setSortBy(sortBy);
+    setSortOrder(sortOrder);
 
     dispatch(
       fetchEventsThunk({
@@ -65,7 +64,7 @@ export default function EventsList() {
     e.preventDefault();
 
     // Update URL with the new query and reset to page 1
-    navigate(`/?query=${query}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+    navigate(`/?query=${query}`, {
       replace: true,
     });
 
@@ -122,7 +121,8 @@ export default function EventsList() {
                 type="button"
                 icon={<FontAwesomeIcon icon={faSearch} width={"3vw"} />}
                 onClick={handleSearch}
-                className="border outline-none p-2 rounded-r-full bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+                className="border outline-none p-2 rounded-r-full bg-emerald-400 hover:bg-transparent
+                 hover:text-emerald-500"
               />
             </div>
             <div className="ml-4 rounded-sm">
