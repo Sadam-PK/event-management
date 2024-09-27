@@ -20,12 +20,18 @@ export default function EventsList() {
   const events = useSelector((state) => state.event.events);
   const currentPage = useSelector((state) => state.event.currentPage);
   const totalPages = useSelector((state) => state.event.totalPages);
-  // const isLoading = useSelector((state) => state.event.isLoading);
   const navigate = useNavigate();
   const location = useLocation();
-  const [query, setQuery] = useState(""); // Initial empty query state
+
+  const [query, setQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState(
     new URLSearchParams(location.search).get("query") || ""
+  );
+  const [sortBy, setSortBy] = useState(
+    new URLSearchParams(location.search).get("sortBy") || "createdAt"
+  );
+  const [sortOrder, setSortOrder] = useState(
+    new URLSearchParams(location.search).get("sortOrder") || "asc"
   );
   const [loading, setLoading] = useState(true);
 
@@ -35,60 +41,48 @@ export default function EventsList() {
     }, 500);
 
     const queryParam = new URLSearchParams(location.search).get("query");
-    if (queryParam) {
-      setSearchQuery(queryParam);
-      dispatch(
-        fetchEventsThunk({
-          page: currentPage,
-          query: queryParam,
-          sortBy: "createdAt",
-          sortOrder: "asc",
-          limit: 6,
-        })
-      );
-    } else {
-      setSearchQuery(""); // Reset searchQuery if no query param
-      dispatch(
-        fetchEventsThunk({
-          page: currentPage,
-          query: "",
-          sortBy: "createdAt",
-          sortOrder: "asc",
-          limit: 6,
-        })
-      );
-    }
+    const sortField =
+      new URLSearchParams(location.search).get("sortBy") || "createdAt";
+    const sortOrderParam =
+      new URLSearchParams(location.search).get("sortOrder") || "asc";
+
+    setSearchQuery(queryParam || "");
+    setSortBy(sortField);
+    setSortOrder(sortOrderParam);
+
+    dispatch(
+      fetchEventsThunk({
+        page: currentPage,
+        query: queryParam || "",
+        sortBy: sortField,
+        sortOrder: sortOrderParam,
+        limit: 6,
+      })
+    );
   }, [location.search, dispatch, currentPage]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log("asdasd");
 
-    navigate(`/?query=${query}`, { replace: true });
-    setSearchQuery(query); // Update searchQuery state to trigger effect
-    dispatch(
-      fetchEventsThunk({
-        page: 1, // Reset to page 1 on new search
-        query,
-        sortBy: "createdAt",
-        sortOrder: "asc",
-        limit: 6,
-      })
-    );
-    console.log("zxcxzc");
+    // Update URL with the new query and reset to page 1
+    navigate(`/?query=${query}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+      replace: true,
+    });
+
+    // Clear the search input after submission
+    setQuery("");
   };
 
   const handleSortChange = (e) => {
     const [field, order] = e.target.value.split(":");
-    dispatch(
-      fetchEventsThunk({
-        page: 1, // Reset to page 1 on sort change
-        query: searchQuery,
-        sortBy: field,
-        sortOrder: order,
-        limit: 6,
-      })
-    );
+
+    setSortBy(field);
+    setSortOrder(order);
+
+    // Update URL with the sort information
+    navigate(`/?query=${searchQuery}&sortBy=${field}&sortOrder=${order}`, {
+      replace: true,
+    });
   };
 
   const handleClick = (id) => {
@@ -126,20 +120,19 @@ export default function EventsList() {
 
               <CustomButton
                 type="button"
-                // name="Search"
-                icon={<FontAwesomeIcon icon={faSearch} width={"3vw"}/>}
+                icon={<FontAwesomeIcon icon={faSearch} width={"3vw"} />}
                 onClick={handleSearch}
-                className="border outline-none p-2 rounded-r-full
-                 bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
+                className="border outline-none p-2 rounded-r-full bg-emerald-400 hover:bg-transparent hover:text-emerald-500"
               />
             </div>
             <div className="ml-4 rounded-sm">
               <select
+                value={`${sortBy}:${sortOrder}`} // Bind to state
                 onChange={handleSortChange}
                 className="border outline-none p-2"
               >
-                <option value="title:asc">Ascending</option>
-                <option value="title:desc">Descending</option>
+                <option value="createdAt:asc">Ascending</option>
+                <option value="createdAt:desc">Descending</option>
               </select>
             </div>
           </div>
@@ -158,16 +151,12 @@ export default function EventsList() {
 
           {/* Pagination controls */}
           {events.length > 0 && (
-            <div
-              className="flex justify-center items-center gap-5 
-            mt-10 py-20"
-            >
+            <div className="flex justify-center items-center gap-5 mt-10 py-20">
               <CustomButton
                 icon={<FontAwesomeIcon icon={faArrowLeft} />}
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="border border-gray-500 px-3 rounded-xl cursor-pointer
-                hover:border-gray-400"
+                className="border border-gray-500 px-3 rounded-xl cursor-pointer hover:border-gray-400"
               />
               <span className="text-gray-500">
                 Page {currentPage} of {totalPages}
@@ -176,8 +165,7 @@ export default function EventsList() {
                 icon={<FontAwesomeIcon icon={faArrowRight} />}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="border border-gray-500 px-3 rounded-xl cursor-pointer
-                hover:border-gray-400"
+                className="border border-gray-500 px-3 rounded-xl cursor-pointer hover:border-gray-400"
               />
             </div>
           )}
@@ -186,3 +174,4 @@ export default function EventsList() {
     </div>
   );
 }
+

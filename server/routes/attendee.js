@@ -11,7 +11,7 @@ router.get("/events", authenticateJwt, async (req, res) => {
     const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
     const keyword = req.query.q || ""; // Optional search keyword
-    const sortBy = req.query.sortBy || "createdAt"; // Default sorting field
+    const sortBy = req.query.sortBy || "createdAt"; // Default sorting field is 'createdAt'
     const sortOrder = req.query.sortOrder === "desc" ? -1 : 1; // Default to ascending order
 
     const query = keyword ? { title: { $regex: keyword, $options: "i" } } : {};
@@ -34,6 +34,7 @@ router.get("/events", authenticateJwt, async (req, res) => {
     res.status(500).json({ error: "Error fetching events" });
   }
 });
+
 
 // Find a single event
 router.get("/events/:id", authenticateJwt, async (req, res) => {
