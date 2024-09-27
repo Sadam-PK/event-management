@@ -1,24 +1,27 @@
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios"; // For fetching old messages
 import {
   faCircleRight,
   faMessage,
   faMinus,
 } from "@fortawesome/free-solid-svg-icons";
+// import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // For fetching old messages
+
 
 export default function Chat({ eventId }) {
   const [ws, setWs] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  const bottomRef = useRef(null);  // Create a ref for the last message
 
   useEffect(() => {
     if (!eventId) return;
     const token = localStorage.getItem("token");
     const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
 
-    // Fetch previous messages from the database using an API
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
@@ -29,17 +32,13 @@ export default function Chat({ eventId }) {
             },
           }
         );
-        // console.log("Fetched Messages: ", response.data);
-        setMessages(response.data); // Set messages with sender usernames
+        setMessages(response.data);
       } catch (error) {
         console.error("Error fetching previous messages:", error);
       }
     };
 
     fetchMessages();
-
-    // WebSocket setup
-    // const socket = new WebSocket(`ws://localhost:3000?token=${token}`);
 
     socket.onopen = () => {
       console.log("Connected to WebSocket");
@@ -48,7 +47,6 @@ export default function Chat({ eventId }) {
 
     socket.onmessage = (event) => {
       const incomingMessage = JSON.parse(event.data);
-      // console.log("Incoming WebSocket Message: ", incomingMessage);
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     };
 
@@ -67,6 +65,13 @@ export default function Chat({ eventId }) {
     };
   }, [eventId]);
 
+  // Scroll to the bottom whenever messages change
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const sendMessage = (e) => {
     e.preventDefault();
     if (ws && message) {
@@ -83,8 +88,6 @@ export default function Chat({ eventId }) {
   const toggleChat = () => {
     setIsExpanded(!isExpanded);
   };
-
-  // console.log("Messages=>>>> ", messages);
 
   return (
     <div className="absolute -bottom-12 right-0 mr-10">
@@ -118,6 +121,7 @@ export default function Chat({ eventId }) {
                 <strong>{msg?.sender?.username} </strong> {msg?.content}
               </p>
             ))}
+            <div ref={bottomRef} /> {/* Empty div to track the bottom */}
           </div>
 
           <div className="flex">
