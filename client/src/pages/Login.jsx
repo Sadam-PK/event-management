@@ -2,7 +2,8 @@ import CustomInput from "../components/customInput";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { loginSchema } from "../../../common/zodSchema.js";
+// import { loginSchema } from "../../../common/zodSchema.js";
+import { loginSchema } from "@sadamccr/eventcommon";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/features/auth/authSlice";
 import { userMe } from "../store/features/user/userSlice";
@@ -66,14 +67,6 @@ export default function Login() {
     };
   }, [dispatch]);
 
-  // if (status === "loading") {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <Audio height="80" width="80" color="green" ariaLabel="loading" />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div
       className="flex flex-col w-auto h-screen p-3 gap-3 
@@ -101,14 +94,6 @@ export default function Login() {
           onChange={handlePasswordChange}
         />
       </div>
-      {/* <button
-        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
-        hover:bg-transparent hover:border-emerald-400 hover:border-2
-        hover:text-emerald-600"
-        onClick={handleSubmit}
-      >
-        Login
-      </button> */}
 
       <CustomButton
         name="Login"

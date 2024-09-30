@@ -1,6 +1,16 @@
 {
-  "type": "module",
+  "name": "@sadamccr/eventcommon",
+  "version": "1.0.1",
+  "main": "zodSchema.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "commonjs",
   "dependencies": {
     "zod": "^3.23.8"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

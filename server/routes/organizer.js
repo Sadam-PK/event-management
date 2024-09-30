@@ -10,9 +10,10 @@ const cloudinary = require("../helper/cloudinaryConfig");
 const zod = require("zod");
 const fs = require("fs");
 
-(async () => {
   // import zod schema from common folder for backend validation
-  const { eventSchema } = await import("../../common/zodSchema.js");
+  // const { eventSchema } = require("../../common/zodSchema.js");
+  const {eventSchema} = require("@sadamccr/eventcommon")
+console.log('asdsadasd = ' + eventSchema );
 
   const imgConfig = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -257,6 +258,5 @@ const fs = require("fs");
 
   // Notification of event ...
 
-})();
 
 module.exports = router;

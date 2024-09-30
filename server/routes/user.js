@@ -6,10 +6,13 @@ const SECRET = process.env.SECRET;
 const { User, Chat } = require("../db/index");
 const router = express.Router();
 
-(async () => {
-  const { loginSchema, signUpSchema, eventSchema } = await import(
-    "../../common/zodSchema.js"
-  );
+// @ts-ignore
+const {loginSchema, signUpSchema} = require("@sadamccr/eventcommon");
+
+// (async () => {
+//   const { loginSchema, signUpSchema, eventSchema } = await import(
+//     "../../common/zodSchema.js"
+//   );
 
   // Sign up user -- common route for attendees and organizers
   router.post("/signup", async (req, res) => {
@@ -179,6 +182,5 @@ const router = express.Router();
     }
   });
   
-})();
 
 module.exports = router;

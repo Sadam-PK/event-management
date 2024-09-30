@@ -3,7 +3,9 @@ import CustomRadio from "../components/customRadio";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { signUpSchema } from "../../../common/zodSchema";
+// import { signUpSchema } from "../../../common/zodSchema";
+import { signUpSchema } from "@sadamccr/eventcommon";
+
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userRegister } from "../store/features/register/registerSlice";
@@ -79,14 +81,7 @@ export default function Signup() {
         value={password}
         onChange={handlePasswordChange}
       />
-      {/* <button
-        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
-        hover:bg-transparent hover:border-emerald-400 hover:border-2
-        hover:text-emerald-600"
-        onClick={handleSubmit}
-      >
-        Register
-      </button> */}
+     
       <CustomButton
         name="Register"
         className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
