@@ -101,7 +101,7 @@ export default function EventsList() {
   };
 
   return (
-    <div>
+    <div className="">
       <div className="bg-emerald-200 px-3 text-sm">Attendee Panel</div>
       {loading ? (
         <Loading />

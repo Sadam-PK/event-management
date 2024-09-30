@@ -85,7 +85,7 @@ export default function Signup() {
      
       <CustomButton
         name="Register"
-        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-md w-32
+        className="bg-emerald-400 p-2 border-2 border-emerald-400 rounded-full w-32
         hover:bg-transparent hover:border-emerald-400 hover:border-2
         hover:text-emerald-600"
         onClick={handleSubmit}

@@ -152,7 +152,7 @@ export default function EventDetails() {
                 onClick={handleJoinClick}
                 className="border rounded-full p-2 bg-emerald-600
                 text-white hover:bg-white hover:text-emerald-600 border-emerald-600
-                hover:border-emerald-600 hover:transition duration-1000"
+                hover:border-emerald-600 hover:transition duration-1000 w-[6vw]"
               />
             </div>
           </div>
