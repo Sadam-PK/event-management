@@ -60,7 +60,8 @@ export default function Signup() {
       className="flex flex-col w-auto h-screen p-3 gap-3 
       justify-center items-center mx-auto"
     >
-      <h2 className="font-bold text-xl">Sign Up Here!</h2>
+      <FontAwesomeIcon icon={faUser} size="4x" color="gray"/>
+      <h2 className="font-bold text-xl py-2 text-gray-600">Sign Up Here!</h2>
       <CustomRadio onChange={handleRadioChange} value={role} />
       <CustomInput
         icon={<FontAwesomeIcon icon={faUser} className="text-gray-700 mr-3" />}
@@ -93,7 +94,8 @@ export default function Signup() {
       <div className="p-5">
         <p className="text-gray-500">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-700">
+          <Link to="/login" className="text-blue-700 hover:text-blue-500 
+          transition duration-300">
             Login here
           </Link>
         </p>

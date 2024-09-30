@@ -127,7 +127,7 @@ export default function AppBar() {
           <li>{user?.username}</li>
           <li
             className="cursor-pointer w-[6vw] text-center bg-emerald-600 text-white 
-            rounded-lg hover:bg-emerald-500"
+            rounded-lg hover:bg-emerald-500 hover:transition duration-500"
             onClick={handleLogout}
           >
             Logout

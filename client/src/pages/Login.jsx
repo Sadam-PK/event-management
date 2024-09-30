@@ -10,7 +10,7 @@ import { userMe } from "../store/features/user/userSlice";
 import { Audio } from "react-loader-spinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faPerson, faUser } from "@fortawesome/free-solid-svg-icons";
 import CustomButton from "../components/customButton.jsx";
 
 export default function Login() {
@@ -72,7 +72,8 @@ export default function Login() {
       className="flex flex-col w-auto h-screen p-3 gap-3 
     justify-center items-center mx-auto"
     >
-      <h2 className="font-bold text-xl">Sign In</h2>
+      <FontAwesomeIcon icon={faUser} size="4x" color="gray"/>
+      <h2 className="font-bold text-xl text-gray-600 py-3">Sign In</h2>
       <div className="w-full max-w-xs">
         <CustomInput
           icon={
@@ -106,7 +107,8 @@ export default function Login() {
       <div className="p-5">
         <p className="text-gray-500">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-700">
+          <Link to="/signup" className="text-blue-700 hover:text-blue-500 
+          transition duration-300">
             Register here
           </Link>
         </p>

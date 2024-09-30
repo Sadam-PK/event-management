@@ -95,14 +95,16 @@ export default function Chat({ eventId }) {
         {isExpanded ? (
           <FontAwesomeIcon
             icon={faMinus}
-            className="p-1 bg-blue-700 text-white rounded-full"
+            className="p-1 bg-blue-700 text-white rounded-full hover:bg-red-400
+            hover:duration-500"
             title="Close"
           />
         ) : (
           <FontAwesomeIcon
             icon={faMessage}
             size="2x"
-            className="p-6 bg-blue-700 rounded-full text-white"
+            className="p-6 bg-blue-700 rounded-full text-white hover:bg-blue-900
+            hover:transition duration-500"
             title="Chat"
           />
         )}
